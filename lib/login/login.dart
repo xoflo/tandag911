@@ -31,12 +31,15 @@ class _LoginScreenState extends State<LoginScreen> {
           Padding(
             padding: const EdgeInsets.fromLTRB(42.0, 0, 42.0, 0),
             child: TextField(
+              onChanged: (value) {
+                handleContactInput(value, username);
+              },
               controller: username,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15)),
                 labelText: 'Phone Number / Email',
-                hintText: 'Phone Number / Email',
+                hintText: '+63 (Insert Number) / Email',
               ),
             ),
           ),
@@ -65,11 +68,13 @@ class _LoginScreenState extends State<LoginScreen> {
             hidePassword.value = !hidePassword.value;
           }, icon: Icon(hidePassword.value ? Icons.visibility : Icons.visibility_off)),
 
-          ElevatedButton(onPressed: () {
+          ElevatedButton(onPressed: () async {
             if (username.text.contains("@")) {
-              signInWithEmailAndPassword(username.text, password.text);
+              await signInWithEmailAndPassword(context, username.text, password.text);
             } else {
-              verifyPhoneNumber(context, username.text);
+              String newString = username.text.replaceAll(' ', '');
+              print(newString);
+              await verifyPhoneNumber(context, newString);
             }
           }, child: Container(
 
@@ -78,7 +83,9 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(onPressed: () {}, child: Text("Forget Password")),
-              TextButton(onPressed: () {}, child: Text("Sign-Up")),
+              TextButton(onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => ))
+              }, child: Text("Sign-Up")),
             ],
           )
 
