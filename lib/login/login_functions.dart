@@ -44,33 +44,60 @@ signOut() async {
 verifyPhoneNumber(BuildContext context, String phoneNumber, {int? resendToken}) async {
   FirebaseAuth auth = FirebaseAuth.instance;
 
-  await auth.verifyPhoneNumber(
-    forceResendingToken: resendToken,
-    phoneNumber: '+63 $phoneNumber',
-    verificationCompleted: (PhoneAuthCredential credential) async {
-      if (TargetPlatform.android == defaultTargetPlatform) {
-        await auth.signInWithCredential(credential);
-      }
-    },
-    verificationFailed: (FirebaseAuthException e) {
-      if (e.code == 'invalid-phone-number') {
-        print('The provided phone number is not valid.');
-      }
-    },
-    codeSent: (String verificationId, int? resendToken) async {
 
-      TextEditingController smsController = TextEditingController();
+  if (kIsWeb) {
 
-      showDialog(context: context, builder: (_) => AlertDialog(
-        title: Text("Enter SMS Code"),
-        content: Container(
-          height: 300,
-          width: 300,
-          child: TextField(
-            controller: smsController,
-            maxLength: 6,
-          ),
+    ConfirmationResult confirmationResult = await auth.signInWithPhoneNumber('+63 $phoneNumber');
+    TextEditingController smsController = TextEditingController();
+
+    showDialog(context: context, builder: (_) => AlertDialog(
+      content: Container(
+        height: 300,
+        width: 300,
+        child: TextField(
+          controller: smsController,
+          maxLength: 6,
         ),
+      ),
+          actions: [
+            TextButton(onPressed: () async {
+
+      UserCredential userCredential = await confirmationResult.confirm(smsController.text);
+    }, child: Text("Submit"))
+      ],
+    )).then((value) {
+      smsController.dispose();
+    });
+
+  }
+
+  if (TargetPlatform.android == defaultTargetPlatform) {
+    await auth.verifyPhoneNumber(
+      timeout: const Duration(seconds: 60),
+      forceResendingToken: resendToken,
+      phoneNumber: '+63 $phoneNumber',
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        await auth.signInWithCredential(credential);
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        if (e.code == 'invalid-phone-number') {
+          print('The provided phone number is not valid.');
+        }
+      },
+      codeSent: (String verificationId, int? resendToken) async {
+
+        TextEditingController smsController = TextEditingController();
+
+        showDialog(context: context, builder: (_) => AlertDialog(
+          title: Text("Enter SMS Code"),
+          content: Container(
+            height: 300,
+            width: 300,
+            child: TextField(
+              controller: smsController,
+              maxLength: 6,
+            ),
+          ),
           actions: [
             TextButton(onPressed: () async {
               smsController.clear();
@@ -86,11 +113,18 @@ verifyPhoneNumber(BuildContext context, String phoneNumber, {int? resendToken}) 
               } catch(e) {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
               }
-      }, child: Text("Submit"))
-        ],
-      ));
+            }, child: Text("Submit"))
+          ],
+        )).then((value) {
+          smsController.dispose();
+        });
 
-    },
-    codeAutoRetrievalTimeout: (String verificationId) {},
-  );
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Request Timeout")));
+      },
+    );
+  }
+
 }
