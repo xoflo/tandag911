@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "490325365291",
+    "project_id": "tandag911",
+    "storage_bucket": "tandag911.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:490325365291:android:a378e2d2396866fd43106e",
+        "android_client_info": {
+          "package_name": "com.example.tandag_911"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDIk9cV-k2wKmRBQG8x1YAs2lYHbtnp59E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
