@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tandag_911/login/login_functions.dart';
 import 'package:tandag_911/ui_const.dart';
+import 'package:tandag_911/user/homeDisplay.dart';
+import 'package:tandag_911/user/profileDisplay.dart';
 
 class UserScreen extends StatefulWidget {
   UserScreen({super.key, required this.user});
@@ -17,20 +19,28 @@ class _UserScreenState extends State<UserScreen> {
 
   @override
   Widget build(BuildContext context) {
+    ValueNotifier<int> currentIndex = ValueNotifier<int>(0);
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           onPressed: () {}),
-      bottomNavigationBar: BottomNavigationBar(
-          items: [
-            BottomNavigationBarItem(
-                label: 'Recent Reports',
-                icon: Icon(Icons.feed)),
-            BottomNavigationBarItem(
-                label: 'Profile',
-                icon: Icon(Icons.supervised_user_circle))
-      ]),
+      bottomNavigationBar: ValueListenableBuilder(
+        valueListenable: currentIndex,
+        builder: (BuildContext context, int value, Widget? child) => BottomNavigationBar(
+          onTap: (value) {
+            currentIndex.value = value;
+          },
+          currentIndex: currentIndex.value,
+            items: [
+              BottomNavigationBarItem(
+                  label: 'Home',
+                  icon: Icon(Icons.home)),
+              BottomNavigationBarItem(
+                  label: 'Profile',
+                  icon: Icon(Icons.supervised_user_circle))
+        ]),
+      ),
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: primaryColor,
@@ -54,30 +64,24 @@ class _UserScreenState extends State<UserScreen> {
       ),
       body: Stack(
         children: [
-          Container(
-            child: Image.asset('background.jpg', fit: BoxFit.cover),
-            height: MediaQuery.of(context).size.height,
-            width: MediaQuery.of(context).size.width,
+          Stack(
+            children: backgroundWidget(context),
           ),
-          Center(
-            child: Opacity(
-              opacity: .2,
-              child: Container(
-                child: Image.asset('tandagLogo.png'),
-                height: MediaQuery.of(context).size.height / 1.5,
-                width: MediaQuery.of(context).size.width / 1.5,
-              ),
-            ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(widget.user!.email.toString()),
-              Text(widget.user!.phoneNumber.toString())
-            ],
-          )
+          ValueListenableBuilder(
+              valueListenable: currentIndex,
+              builder: (context, value, child) {
+                switch (currentIndex.value) {
+                  case 0:
+                    return homeDisplay();
+                  case 1:
+                    return profileDisplay(widget.user);
+                  default:
+                    return homeDisplay();
+
+              }})
         ],
       ),
     );
   }
+
 }
