@@ -88,11 +88,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           : Icons.visibility_off));
                 },
               ),
+
               ElevatedButton(
                   onPressed: () async {
                     signIn(context, username, password);
                   },
                   child: Container(child: Text("Sign-In"))),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -106,11 +108,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                 title: Text("Reset Password"),
                                 content: Container(
-                                    height: 100,
+                                    height: 60,
                                     width: 300,
                                     child: Column(
                                       children: [
                                         TextField(
+                                          controller: resetUsername,
                                           decoration: InputDecoration(
                                             border: OutlineInputBorder(
                                                 borderRadius:
@@ -123,6 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                             handleUsernameInput(value, resetUsername);
                                           },
                                           onSubmitted: (value) {
+                                            Navigator.pop(context);
                                             sendResetPassword(context, resetUsername.text);
                                           },
                                         ),
@@ -138,6 +142,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             ));
                       },
                       child: Text("Reset Password")),
+
+
                   TextButton(
                       onPressed: () {
                         Navigator.push(context,

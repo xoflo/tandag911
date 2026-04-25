@@ -88,8 +88,10 @@ Future<void> sendResetPassword(BuildContext context, String username) async {
       );
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Reset Email Sent")));
     } else {
+      Navigator.pop(context);
       String newString = username.replaceAll(' ', '');
-      await verifyPhoneNumber(context, newString);
+      await verifyPhoneNumber(context, newString, passwordUpdate: 1);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password updated")));
     }
 
 
@@ -119,7 +121,7 @@ signOut() async {
 }
 
 
-verifyPhoneNumber(BuildContext context, String phoneNumber, {int? resendToken}) async {
+verifyPhoneNumber(BuildContext context, String phoneNumber, {int? resendToken, int? passwordUpdate}) async {
   FirebaseAuth auth = FirebaseAuth.instance;
 
 
@@ -129,6 +131,7 @@ verifyPhoneNumber(BuildContext context, String phoneNumber, {int? resendToken}) 
       await auth.signInWithPhoneNumber(phoneNumber);
 
       final smsController = TextEditingController();
+      final newPasswordController = TextEditingController();
 
       if (!context.mounted) return;
 
@@ -136,10 +139,28 @@ verifyPhoneNumber(BuildContext context, String phoneNumber, {int? resendToken}) 
         context: context,
         builder: (_) => AlertDialog(
           title: Text("Enter OTP"),
-          content: TextField(
-            controller: smsController,
-            maxLength: 6,
-            keyboardType: TextInputType.number,
+          content: Container(
+            height: 120,
+            width: 300,
+            child: Column(
+              children: [
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Enter SMS Code'
+                  ),
+                  controller: smsController,
+                  maxLength: 6,
+                  keyboardType: TextInputType.number,
+                ),
+                passwordUpdate != null ? TextField(
+
+                  decoration: InputDecoration(
+                      hintText: 'Enter new password'
+                  ),
+                  controller: newPasswordController,
+                ) : SizedBox(),
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -204,8 +225,12 @@ verifyPhoneNumber(BuildContext context, String phoneNumber, {int? resendToken}) 
             height: 300,
             width: 300,
             child: TextField(
+              decoration: InputDecoration(
+                  hintText: 'Enter SMS Code'
+              ),
               controller: smsController,
               maxLength: 6,
+              keyboardType: TextInputType.number,
             ),
           ),
           actions: [
