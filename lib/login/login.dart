@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tandag_911/login/signup.dart';
 
 import 'login_functions.dart';
 
@@ -19,77 +20,112 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        spacing: 15,
+      body: Stack(
         children: [
           Container(
-              height: 250,
-              width: 250,
-              child: Image.asset('tandagLogo.png')),
-          Text("Tandag Emergency App", style: TextStyle(fontSize: 36, fontWeight: FontWeight.w900),),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(42.0, 0, 42.0, 0),
-            child: TextField(
-              onChanged: (value) {
-                handleContactInput(value, username);
-              },
-              controller: username,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15)),
-                labelText: 'Phone Number / Email',
-                hintText: '+63 (Insert Number) / Email',
-              ),
-            ),
+            child: Image.asset('background.jpg', fit: BoxFit.cover),
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
           ),
-
-          Padding(
-            padding: const EdgeInsets.fromLTRB(42.0, 0, 42.0, 0),
-            child: ValueListenableBuilder(
-              valueListenable: hidePassword,
-              builder: (context, value, child) =>
-              TextField(
-                controller: password,
-                obscureText: value,
-                decoration: InputDecoration(
-
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(15)
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            spacing: 15,
+            children: [
+              Container(
+                  height: 250,
+                  width: 250,
+                  child: Image.asset('tandagLogo.png')),
+              Text("Tandag Emergency App", style: TextStyle(fontSize: 36, fontWeight: FontWeight.w900),),
+              SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(42.0, 0, 42.0, 0),
+                child: TextField(
+                  onSubmitted: (value) {
+                    signIn(context, username, password);
+                  },
+                  onChanged: (value) {
+                    handleContactInput(value, username);
+                  },
+                  controller: username,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15)),
+                    labelText: 'Phone Number / Email',
+                    hintText: '+63 (Insert Number) / Email',
                   ),
-                  labelText: 'Password',
-                  hintText: 'Enter your password',
                 ),
               ),
-            ),
-          ),
 
-          IconButton(onPressed: () {
-            hidePassword.value = !hidePassword.value;
-          }, icon: Icon(hidePassword.value ? Icons.visibility : Icons.visibility_off)),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(42.0, 0, 42.0, 0),
+                child: ValueListenableBuilder(
+                  valueListenable: hidePassword,
+                  builder: (context, value, child) =>
+                      TextField(
+                        onSubmitted: (value) {
+                          signIn(context, username, password);
+                        },
+                        controller: password,
+                        obscureText: value,
+                        decoration: InputDecoration(
 
-          ElevatedButton(onPressed: () async {
-            if (username.text.contains("@")) {
-              await signInWithEmailAndPassword(context, username.text, password.text);
-            } else {
-              String newString = username.text.replaceAll(' ', '');
-              print(newString);
-              await verifyPhoneNumber(context, newString);
-            }
-          }, child: Container(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15)
+                          ),
+                          labelText: 'Password',
+                          hintText: 'Enter your password',
+                        ),
+                      ),
+                ),
+              ),
 
-              child: Text("Sign-In"))),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TextButton(onPressed: () {}, child: Text("Forget Password")),
-              TextButton(onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => ))
-              }, child: Text("Sign-Up")),
+              ValueListenableBuilder(
+                valueListenable: hidePassword,
+                builder: (BuildContext context, bool value, Widget? child) {
+                  return IconButton(onPressed: () {
+                    hidePassword.value = !hidePassword.value;
+                  }, icon: Icon(hidePassword.value ? Icons.visibility : Icons.visibility_off));
+                },
+              ),
+              ElevatedButton(onPressed: () async {
+                signIn(context, username, password);
+              }, child: Container(
+
+                  child: Text("Sign-In"))),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(onPressed: () {
+                    showDialog(context: context, builder: (_) =>
+                    AlertDialog(
+                      title: Text("Reset Password"),
+                      content: Container(
+                        height: 300,
+                        width: 300,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15)),
+                            labelText: 'Phone Number / Email',
+                            hintText: '+63 (Insert Number) / Email',
+                          ),
+                          onSubmitted: (value) {
+                            sendResetPassword(context, value);
+                          },
+
+                      )
+                    )
+                    ));
+                  }, child: Text("Reset Password")),
+                  TextButton(onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => SignupScreen()));
+                  }, child: Text("Sign-Up")),
+                ],
+              )
+
+
             ],
           )
-
-
         ],
       ),
     );

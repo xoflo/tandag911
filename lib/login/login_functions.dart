@@ -52,6 +52,15 @@ void handleContactInput(String value, TextEditingController controller) {
   }
 }
 
+void signIn(BuildContext context, TextEditingController username, TextEditingController password) async {
+  if (username.text.contains("@")) {
+    await signInWithEmailAndPassword(context, username.text, password.text);
+  } else {
+    String newString = username.text.replaceAll(' ', '');
+    print(newString);
+    await verifyPhoneNumber(context, newString);
+  }
+}
 
 createUserWithEmailAndPassword(BuildContext context, String emailAddress, String password) async {
   try {
@@ -59,25 +68,26 @@ createUserWithEmailAndPassword(BuildContext context, String emailAddress, String
       email: emailAddress,
       password: password,
     );
+
+    await credential.user!.sendEmailVerification();
+
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('The password provided is too weak.')));
     } else if (e.code == 'email-already-in-use') {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('The account already exists for that email.')));
     }
-  } catch (e) {
-    print(e);
   }
 }
 
-Future<void> sendResetPassword(String email) async {
+Future<void> sendResetPassword(BuildContext context, String email) async {
   try {
     await FirebaseAuth.instance.sendPasswordResetEmail(
       email: email.trim(),
     );
-    print("Reset email sent");
-  } catch (e) {
-    print("Error: $e");
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Reset Email Sent")));
+  } on FirebaseAuthException catch (e) {
+    print("Error: ${e.code}");
   }
 }
 
@@ -88,10 +98,11 @@ signInWithEmailAndPassword(BuildContext context, String emailAddress, String pas
         password: password
     );
   } on FirebaseAuthException catch (e) {
-    if (e.code == 'user-not-found') {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No user found for that email.')));
-    } else if (e.code == 'wrong-password') {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Wrong password provided for that user.')));
+    print(e.code);
+    if (e.code == 'missing-password') {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No password provided for that user.')));
+    } else if (e.code == 'invalid-credential') {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Email and password do not match.')));
     }
   }
 }
@@ -155,9 +166,10 @@ verifyPhoneNumber(BuildContext context, String phoneNumber, {int? resendToken}) 
 
       smsController.dispose();
 
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-phone-number')
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Phone auth failed: $e")),
+        SnackBar(content: Text("Invalid Phone Number")),
       );
     }
   }
