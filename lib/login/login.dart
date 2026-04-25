@@ -12,6 +12,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   ValueNotifier<bool> hidePassword = ValueNotifier<bool>(true);
+  ValueNotifier<bool> isPhone = ValueNotifier<bool>(false);
 
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
@@ -47,6 +48,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                   onChanged: (value) {
                     handleUsernameInput(value, username);
+                    final isPhone = value.startsWith('+') || RegExp(r'^[0-9]+$').hasMatch(value);
+                    this.isPhone.value = isPhone;
                   },
                   controller: username,
                   decoration: InputDecoration(
@@ -57,21 +60,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(42.0, 0, 42.0, 0),
-                child: ValueListenableBuilder(
-                  valueListenable: hidePassword,
-                  builder: (context, value, child) => TextField(
-                    onSubmitted: (value) {
-                      signIn(context, username, password);
-                    },
-                    controller: password,
-                    obscureText: value,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(15)),
-                      labelText: 'Password',
-                      hintText: 'Enter your password',
+              ValueListenableBuilder(
+                valueListenable: isPhone,
+                builder: (context, value, child) => Padding(
+                  padding: const EdgeInsets.fromLTRB(42.0, 0, 42.0, 0),
+                  child: ValueListenableBuilder(
+                    valueListenable: hidePassword,
+                    builder: (context, value, child) => isPhone.value == true ? Text('Phone Authentication is verified via OTP', style: TextStyle(color: Colors.grey)) : TextField(
+                      onSubmitted: (value) {
+                        signIn(context, username, password);
+                      },
+                      controller: password,
+                      obscureText: value,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        labelText: 'Password',
+                        hintText: 'Enter your password',
+                      ),
                     ),
                   ),
                 ),
@@ -91,6 +97,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
               ElevatedButton(
                   onPressed: () async {
+                    if (isPhone.value == false) {
+                      if (username.text.isEmpty || password.text.isEmpty) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please fill in all fields.")));
+                    }
+
                     signIn(context, username, password);
                   },
                   child: Container(child: Text("Sign-In"))),
@@ -118,9 +128,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                             border: OutlineInputBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(15)),
-                                            labelText: 'Phone Number / Email',
+                                            labelText: 'Email',
                                             hintText:
-                                                '+63 (Insert Number) / Email',
+                                                'Email Accounts Only',
                                           ),
                                           onChanged: (value) {
                                             handleUsernameInput(value, resetUsername);

@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tandag_911/user/user.dart';
 
+import '../const.dart';
+
 void handleUsernameInput(String value, TextEditingController controller) {
   final trimmed = value.replaceAll(' ', '');
 
@@ -62,6 +64,14 @@ void signIn(BuildContext context, TextEditingController username, TextEditingCon
   }
 }
 
+returnToLogin(BuildContext context) {
+  Navigator.pushNamedAndRemoveUntil(
+    context,
+    '/login',
+        (route) => false,
+  );
+}
+
 createUserWithEmailAndPassword(BuildContext context, String emailAddress, String password) async {
   try {
     final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
@@ -70,6 +80,9 @@ createUserWithEmailAndPassword(BuildContext context, String emailAddress, String
     );
 
     await credential.user!.sendEmailVerification();
+
+    Navigator.pop(context);
+    verifyEmailPrompt(context);
 
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
@@ -90,7 +103,7 @@ Future<void> sendResetPassword(BuildContext context, String username) async {
     } else {
       Navigator.pop(context);
       String newString = username.replaceAll(' ', '');
-      await verifyPhoneNumber(context, newString, passwordUpdate: 1);
+      await verifyPhoneNumber(context, newString);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password updated")));
     }
 
@@ -100,12 +113,43 @@ Future<void> sendResetPassword(BuildContext context, String username) async {
   }
 }
 
+verifyEmailPrompt(BuildContext context) {
+  showDialog(context: context, builder: (_) => AlertDialog(
+    title: Text("Email Verification Sent"),
+    content: Container(
+      height: 140,
+      width: 300,
+      child: Column(
+        spacing: 5,
+        children: [
+          Icon(
+              size: 30,
+              Icons.mark_email_unread_outlined),
+          Text("Your account is already created", style: TextStyle(fontSize: 18), textAlign: TextAlign.center),
+          Text("To complete your sign-up, verify your email by clicking the link sent to your email (all inbox or spam). After verification, you will be able to log-in to the app. Signing in without verification will trigger another verification link.", textAlign: TextAlign.center)
+        ],
+      ),
+    ),
+    actions: [
+      TextButton(onPressed: () {
+        Navigator.pop(context);
+      }, child: Text("I Understand")),
+    ],
+  ));
+}
+
 signInWithEmailAndPassword(BuildContext context, String emailAddress, String password) async {
   try {
     final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailAddress,
         password: password
     );
+
+    if (credential.user!.emailVerified == false) {
+      verifyEmailPrompt(context);
+    } else {
+      credential.user!.reload();
+    }
   } on FirebaseAuthException catch (e) {
     print(e.code);
     if (e.code == 'missing-password') {
@@ -121,7 +165,7 @@ signOut() async {
 }
 
 
-verifyPhoneNumber(BuildContext context, String phoneNumber, {int? resendToken, int? passwordUpdate}) async {
+verifyPhoneNumber(BuildContext context, String phoneNumber, {int? resendToken}) async {
   FirebaseAuth auth = FirebaseAuth.instance;
 
 
@@ -131,7 +175,6 @@ verifyPhoneNumber(BuildContext context, String phoneNumber, {int? resendToken, i
       await auth.signInWithPhoneNumber(phoneNumber);
 
       final smsController = TextEditingController();
-      final newPasswordController = TextEditingController();
 
       if (!context.mounted) return;
 
@@ -140,9 +183,10 @@ verifyPhoneNumber(BuildContext context, String phoneNumber, {int? resendToken, i
         builder: (_) => AlertDialog(
           title: Text("Enter OTP"),
           content: Container(
-            height: 120,
+            height: 160,
             width: 300,
             child: Column(
+              spacing: 10,
               children: [
                 TextField(
                   decoration: InputDecoration(
@@ -152,13 +196,11 @@ verifyPhoneNumber(BuildContext context, String phoneNumber, {int? resendToken, i
                   maxLength: 6,
                   keyboardType: TextInputType.number,
                 ),
-                passwordUpdate != null ? TextField(
 
-                  decoration: InputDecoration(
-                      hintText: 'Enter new password'
-                  ),
-                  controller: newPasswordController,
-                ) : SizedBox(),
+                Icon(
+                    size: 40,
+                    Icons.phone_iphone),
+                Text("An OTP has been sent to your phone number. Please wait for a minute before trying again.", textAlign: TextAlign.center,),
               ],
             ),
           ),
@@ -170,6 +212,7 @@ verifyPhoneNumber(BuildContext context, String phoneNumber, {int? resendToken, i
                   await confirmationResult.confirm(
                     smsController.text.trim(),
                   );
+
 
                   if (!context.mounted) return;
 
@@ -222,15 +265,21 @@ verifyPhoneNumber(BuildContext context, String phoneNumber, {int? resendToken, i
         showDialog(context: context, builder: (_) => AlertDialog(
           title: Text("Enter SMS Code"),
           content: Container(
-            height: 300,
+            height: 120,
             width: 300,
-            child: TextField(
-              decoration: InputDecoration(
-                  hintText: 'Enter SMS Code'
-              ),
-              controller: smsController,
-              maxLength: 6,
-              keyboardType: TextInputType.number,
+            child: Column(
+              spacing: 10,
+              children: [
+                TextField(
+                  decoration: InputDecoration(
+                      hintText: 'Enter SMS Code'
+                  ),
+                  controller: smsController,
+                  maxLength: 6,
+                  keyboardType: TextInputType.number,
+                ),
+                Text("An OTP has been sent to your phone number.", style: TextStyle(color: Colors.grey), textAlign: TextAlign.center,),
+              ],
             ),
           ),
           actions: [

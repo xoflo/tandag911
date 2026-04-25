@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:tandag_911/ui_const.dart';
 import 'package:tandag_911/user/user.dart';
 import 'firebase_options.dart';
+import 'login/signup.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -18,7 +18,6 @@ class _UserScreenState extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
 
-    print(widget.user);
     return Scaffold(
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),

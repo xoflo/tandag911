@@ -11,6 +11,7 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   ValueNotifier<bool> hidePassword = ValueNotifier<bool>(true);
+  ValueNotifier<bool> isPhone = ValueNotifier<bool>(false);
 
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
@@ -50,6 +51,9 @@ class _SignupScreenState extends State<SignupScreen> {
                 child: TextField(
                   onChanged: (value) {
                     handleUsernameInput(value, username);
+
+                    final isPhone = value.startsWith('+') || RegExp(r'^[0-9]+$').hasMatch(value);
+                    this.isPhone.value = isPhone;
                   },
                   controller: username,
                   decoration: InputDecoration(
@@ -61,34 +65,35 @@ class _SignupScreenState extends State<SignupScreen> {
                 ),
               ),
 
-              Padding(
-                padding: const EdgeInsets.fromLTRB(42.0, 0, 42.0, 0),
-                child: ValueListenableBuilder(
-                  valueListenable: hidePassword,
-                  builder: (context, value, child) =>
-                      TextField(
-                        controller: password,
-                        obscureText: value,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15)
-                          ),
-                          labelText: 'Password',
-                          hintText: 'Enter your password',
-                        ),
-                      ),
-                ),
-              ),
               ValueListenableBuilder(
-                valueListenable: hidePassword,
-                builder: (BuildContext context, bool value, Widget? child) {
-                  return IconButton(onPressed: () {
-                    hidePassword.value = !hidePassword.value;
-                  }, icon: Icon(hidePassword.value ? Icons.visibility : Icons.visibility_off));
-                },
+                valueListenable: isPhone,
+                builder: (context, value, child) => Padding(
+                  padding: const EdgeInsets.fromLTRB(42.0, 0, 42.0, 0),
+                  child: ValueListenableBuilder(
+                    valueListenable: hidePassword,
+                    builder: (context, value, child) => isPhone.value == true ? Text('Phone Authentication is verified via OTP', style: TextStyle(color: Colors.grey)) : TextField(
+                      onSubmitted: (value) {
+                        signIn(context, username, password);
+                      },
+                      controller: password,
+                      obscureText: value,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15)),
+                        labelText: 'Password',
+                        hintText: 'Enter your password',
+                      ),
+                    ),
+                  ),
+                ),
               ),
 
               ElevatedButton(onPressed: () async {
+                if (isPhone.value == false) {
+                  if (username.text.isEmpty || password.text.isEmpty) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please fill in all fields.")));
+                }
+
+
                 if (username.text.contains("@")) {
                   createUserWithEmailAndPassword(context, username.text, password.text);
                 } else {
