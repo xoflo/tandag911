@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tandag_911/user/user.dart';
 
-void handleContactInput(String value, TextEditingController controller) {
+void handleUsernameInput(String value, TextEditingController controller) {
   final trimmed = value.replaceAll(' ', '');
 
   if (trimmed.isEmpty) return;
@@ -80,12 +80,19 @@ createUserWithEmailAndPassword(BuildContext context, String emailAddress, String
   }
 }
 
-Future<void> sendResetPassword(BuildContext context, String email) async {
+Future<void> sendResetPassword(BuildContext context, String username) async {
   try {
-    await FirebaseAuth.instance.sendPasswordResetEmail(
-      email: email.trim(),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Reset Email Sent")));
+    if (username.contains('@')) {
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: username.trim(),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Reset Email Sent")));
+    } else {
+      String newString = username.replaceAll(' ', '');
+      await verifyPhoneNumber(context, newString);
+    }
+
+
   } on FirebaseAuthException catch (e) {
     print("Error: ${e.code}");
   }

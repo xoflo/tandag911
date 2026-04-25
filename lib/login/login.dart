@@ -11,7 +11,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   ValueNotifier<bool> hidePassword = ValueNotifier<bool>(true);
 
   TextEditingController username = TextEditingController();
@@ -35,7 +34,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: 250,
                   width: 250,
                   child: Image.asset('tandagLogo.png')),
-              Text("Tandag Emergency App", style: TextStyle(fontSize: 36, fontWeight: FontWeight.w900),),
+              Text(
+                "Tandag Emergency App",
+                style: TextStyle(fontSize: 36, fontWeight: FontWeight.w900),
+              ),
               SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.fromLTRB(42.0, 0, 42.0, 0),
@@ -44,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     signIn(context, username, password);
                   },
                   onChanged: (value) {
-                    handleContactInput(value, username);
+                    handleUsernameInput(value, username);
                   },
                   controller: username,
                   decoration: InputDecoration(
@@ -55,75 +57,95 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-
               Padding(
                 padding: const EdgeInsets.fromLTRB(42.0, 0, 42.0, 0),
                 child: ValueListenableBuilder(
                   valueListenable: hidePassword,
-                  builder: (context, value, child) =>
-                      TextField(
-                        onSubmitted: (value) {
-                          signIn(context, username, password);
-                        },
-                        controller: password,
-                        obscureText: value,
-                        decoration: InputDecoration(
-
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(15)
-                          ),
-                          labelText: 'Password',
-                          hintText: 'Enter your password',
-                        ),
-                      ),
+                  builder: (context, value, child) => TextField(
+                    onSubmitted: (value) {
+                      signIn(context, username, password);
+                    },
+                    controller: password,
+                    obscureText: value,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      labelText: 'Password',
+                      hintText: 'Enter your password',
+                    ),
+                  ),
                 ),
               ),
-
               ValueListenableBuilder(
                 valueListenable: hidePassword,
                 builder: (BuildContext context, bool value, Widget? child) {
-                  return IconButton(onPressed: () {
-                    hidePassword.value = !hidePassword.value;
-                  }, icon: Icon(hidePassword.value ? Icons.visibility : Icons.visibility_off));
+                  return IconButton(
+                      onPressed: () {
+                        hidePassword.value = !hidePassword.value;
+                      },
+                      icon: Icon(hidePassword.value
+                          ? Icons.visibility
+                          : Icons.visibility_off));
                 },
               ),
-              ElevatedButton(onPressed: () async {
-                signIn(context, username, password);
-              }, child: Container(
-
-                  child: Text("Sign-In"))),
+              ElevatedButton(
+                  onPressed: () async {
+                    signIn(context, username, password);
+                  },
+                  child: Container(child: Text("Sign-In"))),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextButton(onPressed: () {
-                    showDialog(context: context, builder: (_) =>
-                    AlertDialog(
-                      title: Text("Reset Password"),
-                      content: Container(
-                        height: 300,
-                        width: 300,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(15)),
-                            labelText: 'Phone Number / Email',
-                            hintText: '+63 (Insert Number) / Email',
-                          ),
-                          onSubmitted: (value) {
-                            sendResetPassword(context, value);
-                          },
+                  TextButton(
+                      onPressed: () {
+                        TextEditingController resetUsername = TextEditingController();
 
-                      )
-                    )
-                    ));
-                  }, child: Text("Reset Password")),
-                  TextButton(onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => SignupScreen()));
-                  }, child: Text("Sign-Up")),
+                        showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+
+                                title: Text("Reset Password"),
+                                content: Container(
+                                    height: 100,
+                                    width: 300,
+                                    child: Column(
+                                      children: [
+                                        TextField(
+                                          decoration: InputDecoration(
+                                            border: OutlineInputBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15)),
+                                            labelText: 'Phone Number / Email',
+                                            hintText:
+                                                '+63 (Insert Number) / Email',
+                                          ),
+                                          onChanged: (value) {
+                                            handleUsernameInput(value, resetUsername);
+                                          },
+                                          onSubmitted: (value) {
+                                            sendResetPassword(context, resetUsername.text);
+                                          },
+                                        ),
+
+                                      ],
+                                    )
+                                ),
+                              actions: [
+                                TextButton(onPressed: () {
+                                  sendResetPassword(context, resetUsername.text);
+                                }, child: Text("Reset Password"))
+                              ],
+                            ));
+                      },
+                      child: Text("Reset Password")),
+                  TextButton(
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (_) => SignupScreen()));
+                      },
+                      child: Text("Sign-Up")),
                 ],
               )
-
-
             ],
           )
         ],

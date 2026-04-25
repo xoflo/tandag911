@@ -49,7 +49,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 padding: const EdgeInsets.fromLTRB(42.0, 0, 42.0, 0),
                 child: TextField(
                   onChanged: (value) {
-                    handleContactInput(value, username);
+                    handleUsernameInput(value, username);
                   },
                   controller: username,
                   decoration: InputDecoration(
