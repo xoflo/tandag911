@@ -6,6 +6,7 @@ profileDisplay(User? user) {
   return Column(
     children: [
 
+      Text("Profile")
     ],
   );
 }

@@ -5,6 +5,7 @@ homeDisplay() {
   return Column(
     children: [
 
+      Text("Home")
     ],
   );
 }
