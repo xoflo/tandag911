@@ -198,7 +198,7 @@ verifyPhoneNumber(BuildContext context, String phoneNumber, {int? resendToken}) 
                 ),
 
                 Icon(
-                    size: 40,
+                    size: 30,
                     Icons.phone_iphone),
                 Text("An OTP has been sent to your phone number. Please wait for a minute before trying again.", textAlign: TextAlign.center,),
               ],

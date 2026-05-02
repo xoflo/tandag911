@@ -21,17 +21,20 @@ class _UserScreenState extends State<UserScreen> {
   Widget build(BuildContext context) {
     ValueNotifier<int> currentIndex = ValueNotifier<int>(0);
 
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.add),
-          onPressed: () {}),
-      bottomNavigationBar: ValueListenableBuilder(
-        valueListenable: currentIndex,
-        builder: (BuildContext context, int value, Widget? child) => BottomNavigationBar(
-          onTap: (value) {
-            currentIndex.value = value;
-          },
-          currentIndex: currentIndex.value,
+    return ValueListenableBuilder(
+      valueListenable: currentIndex,
+      builder: (BuildContext context, int value, Widget? child) => Scaffold(
+        floatingActionButton: currentIndex.value == 1 ? null : FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () {
+
+
+            }),
+        bottomNavigationBar: BottomNavigationBar(
+            onTap: (value) {
+              currentIndex.value = value;
+            },
+            currentIndex: currentIndex.value,
             items: [
               BottomNavigationBarItem(
                   label: 'Home',
@@ -39,49 +42,50 @@ class _UserScreenState extends State<UserScreen> {
               BottomNavigationBarItem(
                   label: 'Profile',
                   icon: Icon(Icons.supervised_user_circle))
-        ]),
-      ),
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: primaryColor,
-        title: Text("Tandag Emergency App"),
-        actions: [
-          IconButton(onPressed: () {
+            ]) ,
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: primaryColor,
+          title: Text("Tandag Emergency App"),
+          actions: [
+            IconButton(onPressed: () {
 
-            showDialog(context: context, builder: (_) => AlertDialog(
-              title: Text("Logout"),
-              content: Text("Are you sure you want to logout?"),
-              actions: [
-                TextButton(onPressed: () {
-                  Navigator.pop(context);
-                  signOut();
-            }, child: Text("Logout")
-            )]));
+              showDialog(context: context, builder: (_) => AlertDialog(
+                  title: Text("Logout"),
+                  content: Text("Are you sure you want to logout?"),
+                  actions: [
+                    TextButton(onPressed: () {
+                      Navigator.pop(context);
+                      signOut();
+                    }, child: Text("Logout")
+                    )]));
 
 
-          }, icon: Icon(Icons.logout))
-        ],
-      ),
-      body: Stack(
-        children: [
-          Stack(
-            children: backgroundWidget(context),
-          ),
-          ValueListenableBuilder(
-              valueListenable: currentIndex,
-              builder: (context, value, child) {
-                switch (currentIndex.value) {
-                  case 0:
-                    return homeDisplay();
-                  case 1:
-                    return profileDisplay(widget.user);
-                  default:
-                    return homeDisplay();
+            }, icon: Icon(Icons.logout))
+          ],
+        ),
+        body: Stack(
+          children: [
+            Stack(
+              children: backgroundWidget(context),
+            ),
+            ValueListenableBuilder(
+                valueListenable: currentIndex,
+                builder: (context, value, child) {
+                  switch (currentIndex.value) {
+                    case 0:
+                      return homeDisplay(context);
+                    case 1:
+                      return profileDisplay(context, widget.user);
+                    default:
+                      return homeDisplay(context);
 
-              }})
-        ],
-      ),
+                  }})
+          ],
+        ),
+      )
     );
+
   }
 
 }
