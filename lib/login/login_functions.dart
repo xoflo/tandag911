@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:tandag_911/admin/admin.dart';
 import 'package:tandag_911/user/user.dart';
 
 import '../const.dart';
@@ -55,6 +56,11 @@ void handleUsernameInput(String value, TextEditingController controller) {
 }
 
 void signIn(BuildContext context, TextEditingController username, TextEditingController password) async {
+
+  if (username.text.contains('tandagemergencyapp.com')) {
+    Navigator.push(context, MaterialPageRoute(builder: (_) => AdminScreen()));
+  }
+
   if (username.text.contains("@")) {
     await signInWithEmailAndPassword(context, username.text, password.text);
   } else {
