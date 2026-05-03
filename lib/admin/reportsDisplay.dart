@@ -86,19 +86,22 @@ reportsDisplay(BuildContext context) {
                         lastIndex = selectCategory.value;
                         selectCategory.value = 4;
                       }, child: Text(categories[selectCategory.value]).animate().fadeIn())),
-                    ) : Row(
-                      children: [
-                        TextButton(onPressed: () {
-                          selectCategory.value = 0;
-                        }, child: Text("Open Tasks", style: TextStyle(color: lastIndex == 0 ? primaryColor : Colors.grey))),
-                        TextButton(onPressed: () {
-                          selectCategory.value = 1;
-                        }, child: Text("Assigned", style: TextStyle(color: lastIndex == 1 ? primaryColor : Colors.grey))),
-                        TextButton(onPressed: () {
-                          selectCategory.value = 2;
-                        }, child: Text("Resolved", style: TextStyle(color: lastIndex == 2 ? primaryColor : Colors.grey))),
-                      ],
-                    ).animate().fadeIn();
+                    ) : Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Row(
+                        children: [
+                          TextButton(onPressed: () {
+                            selectCategory.value = 0;
+                          }, child: Text("Open Tasks", style: TextStyle(color: lastIndex == 0 ? primaryColor : Colors.grey))),
+                          TextButton(onPressed: () {
+                            selectCategory.value = 1;
+                          }, child: Text("Assigned", style: TextStyle(color: lastIndex == 1 ? primaryColor : Colors.grey))),
+                          TextButton(onPressed: () {
+                            selectCategory.value = 2;
+                          }, child: Text("Resolved", style: TextStyle(color: lastIndex == 2 ? primaryColor : Colors.grey))),
+                        ],
+                      ).animate().fadeIn(),
+                    );
                 });
 
               }
