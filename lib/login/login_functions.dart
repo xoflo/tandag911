@@ -58,7 +58,16 @@ void handleUsernameInput(String value, TextEditingController controller) {
 void signIn(BuildContext context, TextEditingController username, TextEditingController password) async {
 
   if (username.text.contains('tandagemergencyapp.com')) {
-    Navigator.push(context, MaterialPageRoute(builder: (_) => AdminScreen()));
+
+    final user = username.text.split('@')[0];
+
+    if (user != 'admin') {
+      Navigator.push(context, MaterialPageRoute(builder: (_) => SubAdminScreen(user: user)));
+    } else {
+      Navigator.push(context, MaterialPageRoute(builder: (_) => AdminScreen(user: user)));
+    }
+
+    return;
   }
 
   if (username.text.contains("@")) {

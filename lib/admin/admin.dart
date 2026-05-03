@@ -3,7 +3,9 @@ import 'package:tandag_911/admin/reportsDisplay.dart';
 import 'package:tandag_911/ui_const.dart';
 
 class AdminScreen extends StatefulWidget {
-  const AdminScreen({super.key});
+  const AdminScreen({super.key, required this.user});
+
+  final String user;
 
   @override
   State<AdminScreen> createState() => _AdminScreenState();
