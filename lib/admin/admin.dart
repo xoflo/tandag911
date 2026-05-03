@@ -1,11 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tandag_911/admin/reportsDisplay.dart';
 import 'package:tandag_911/ui_const.dart';
 
+import '../login/login_functions.dart';
+
 class AdminScreen extends StatefulWidget {
   const AdminScreen({super.key, required this.user});
 
-  final String user;
+  final User user;
 
   @override
   State<AdminScreen> createState() => _AdminScreenState();
@@ -23,6 +26,19 @@ class _AdminScreenState extends State<AdminScreen> {
             backgroundColor: primaryColor,
             centerTitle: true,
             title: Text("Tandag Emergency App", style: TextStyle(fontWeight: FontWeight.w900)),
+            actions: [
+              IconButton(onPressed: () {
+                showDialog(context: context, builder: (_) => AlertDialog(
+                    title: Text("Logout"),
+                    content: Text("Are you sure you want to logout?"),
+                    actions: [
+                      TextButton(onPressed: () {
+                        Navigator.pop(context);
+                        signOut();
+                      }, child: Text("Logout")
+                      )]));
+              }, icon: Icon(Icons.logout))
+            ],
           ),
           bottomNavigationBar: BottomNavigationBar(
             onTap: (value) {

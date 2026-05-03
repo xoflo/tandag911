@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tandag_911/admin/admin.dart';
 import 'package:tandag_911/login/login.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:tandag_911/sub-admin/sub-admin.dart';
 import 'package:tandag_911/ui_const.dart';
 import 'package:tandag_911/user/user.dart';
 import 'firebase_options.dart';
@@ -48,6 +49,18 @@ class MyApp extends StatelessWidget {
           }
 
           if (snapshot.hasData && FirebaseAuth.instance.currentUser != null) {
+            if (FirebaseAuth.instance.currentUser!.email != null) {
+              if (FirebaseAuth.instance.currentUser!.email!.contains('tandagemergencyapp.com')) {
+                final user = FirebaseAuth.instance.currentUser!.email!.split('@')[0];
+
+                if (user.contains('admin')) {
+                  return AdminScreen(user: FirebaseAuth.instance.currentUser!);
+                } else {
+                  return SubAdminScreen(user: FirebaseAuth.instance.currentUser!!);
+                }
+              }
+            }
+
             return UserScreen(user: FirebaseAuth.instance.currentUser); // logged in
 
           } else {

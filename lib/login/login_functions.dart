@@ -57,20 +57,6 @@ void handleUsernameInput(String value, TextEditingController controller) {
 }
 
 void signIn(BuildContext context, TextEditingController username, TextEditingController password) async {
-
-  if (username.text.contains('tandagemergencyapp.com')) {
-
-    final user = username.text.split('@')[0];
-
-    if (user != 'admin') {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => SubAdminScreen(user: user)));
-    } else {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => AdminScreen(user: user)));
-    }
-
-    return;
-  }
-
   if (username.text.contains("@")) {
     await signInWithEmailAndPassword(context, username.text, password.text);
   } else {
@@ -112,6 +98,7 @@ createUserWithEmailAndPassword(BuildContext context, String emailAddress, String
 Future<void> sendResetPassword(BuildContext context, String username) async {
   try {
     if (username.contains('@')) {
+
       await FirebaseAuth.instance.sendPasswordResetEmail(
         email: username.trim(),
       );
@@ -162,7 +149,9 @@ signInWithEmailAndPassword(BuildContext context, String emailAddress, String pas
     );
 
     if (credential.user!.emailVerified == false) {
-      verifyEmailPrompt(context);
+      if (!credential.user!.email!.contains('tandagemergencyapp.com')) {
+        verifyEmailPrompt(context);
+      }
     } else {
       credential.user!.reload();
     }
