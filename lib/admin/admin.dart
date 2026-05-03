@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:tandag_911/admin/departmentsDisplay.dart';
 import 'package:tandag_911/admin/reportsDisplay.dart';
 import 'package:tandag_911/admin/settingsDisplay.dart';
