@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tandag_911/admin/departmentsDisplay.dart';
 import 'package:tandag_911/admin/reportsDisplay.dart';
+import 'package:tandag_911/admin/settingsDisplay.dart';
 import 'package:tandag_911/ui_const.dart';
 
 import '../login/login_functions.dart';
@@ -68,11 +70,11 @@ class _AdminScreenState extends State<AdminScreen> {
       case 0:
         return reportsDisplay(context);
       case 1:
-        return Text("Departments");
+        return departmentsDisplay(context);
       case 2:
-        return Text("Settings");
+        return settingsDisplay(context, widget.user);
       default:
-        return Text("Tasks");
+        return reportsDisplay(context);
     }
   }
 }
