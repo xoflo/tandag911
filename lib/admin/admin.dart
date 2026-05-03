@@ -41,6 +41,7 @@ class _AdminScreenState extends State<AdminScreen> {
             ],
           ),
           bottomNavigationBar: BottomNavigationBar(
+            currentIndex: currentIndex.value,
             onTap: (value) {
               currentIndex.value = value;
             },
