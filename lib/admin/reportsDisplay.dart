@@ -16,7 +16,7 @@ reportsDisplay(BuildContext context) {
                 Text("Open Tasks", style: TextStyle(fontSize: 20)),
                 Container(
                   height: MediaQuery.of(context).size.height - 200,
-                  width: MediaQuery.of(context).size.width * .31,
+                  width: MediaQuery.of(context).size.width * .29,
                   child: ListView.builder(
                       itemCount: 3,
                       itemBuilder: (context, i) {

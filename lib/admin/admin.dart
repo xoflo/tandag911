@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:tandag_911/admin/departmentsDisplay.dart';
+import 'package:tandag_911/admin/departments_functions.dart';
 import 'package:tandag_911/admin/reportsDisplay.dart';
 import 'package:tandag_911/admin/settingsDisplay.dart';
 import 'package:tandag_911/ui_const.dart';
@@ -25,6 +26,9 @@ class _AdminScreenState extends State<AdminScreen> {
     return ValueListenableBuilder(
       valueListenable: currentIndex, builder: (BuildContext context, value, Widget? child) {
         return Scaffold(
+          floatingActionButton: currentIndex.value == 1 ? FloatingActionButton(onPressed: () {
+            addDepartmentDialog(context);
+          }, child: Icon(Icons.add)) : SizedBox(),
           appBar: AppBar(
             backgroundColor: primaryColor,
             centerTitle: true,
