@@ -6,6 +6,7 @@ addDepartmentDialog(BuildContext context) {
   TextEditingController password = TextEditingController();
 
   ValueNotifier<bool> visibility = ValueNotifier(true);
+  ValueNotifier<bool> usernameInform = ValueNotifier(true);
 
 
   showDialog(context: context, builder: (_) => AlertDialog(
@@ -26,7 +27,11 @@ addDepartmentDialog(BuildContext context) {
               suffixText: '@tandagemergencyapp.com',
                 hintText: 'Username'
             ),
+            onTap: () {
+
+            },
           ),
+
           ValueListenableBuilder(
             valueListenable: visibility, builder: (BuildContext context, value, Widget? child) {
               return TextField(
