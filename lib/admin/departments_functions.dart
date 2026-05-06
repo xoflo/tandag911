@@ -6,13 +6,13 @@ addDepartmentDialog(BuildContext context) {
   TextEditingController password = TextEditingController();
 
   ValueNotifier<bool> visibility = ValueNotifier(true);
-  ValueNotifier<bool> usernameInform = ValueNotifier(true);
+  ValueNotifier<bool> loginInformation = ValueNotifier(false);
 
 
   showDialog(context: context, builder: (_) => AlertDialog(
     title: Text("Add Department"),
     content: Container(
-      height: 160,
+      height: 180,
       width: 300,
       child: Column(
         children: [
@@ -28,9 +28,15 @@ addDepartmentDialog(BuildContext context) {
                 hintText: 'Username'
             ),
             onTap: () {
-
+              loginInformation.value = true;
+            },
+            onTapOutside: (value) {
+              loginInformation.value = !loginInformation.value;
             },
           ),
+          ValueListenableBuilder(valueListenable: loginInformation, builder: (z, x, c) {
+            return Text("${username.text}@tandagemergencyapp.com is your login email", style: TextStyle(color: Colors.grey));
+          }),
 
           ValueListenableBuilder(
             valueListenable: visibility, builder: (BuildContext context, value, Widget? child) {
