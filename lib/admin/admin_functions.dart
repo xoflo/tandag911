@@ -4,11 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../const.dart';
 
 createEmailUserAdmin(BuildContext context, String email, String password, String department) async {
+  final realEmail = '$email@tandagemergencyapp.com';
+
+
   await firestore.collection('admins').add({
-    'email': '$email@tandagemergencyapp.com',
+    'email': realEmail,
     'password': password,
     'department': department,
     'created_at': FieldValue.serverTimestamp(),
   });
-  await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+  await FirebaseAuth.instance.createUserWithEmailAndPassword(email: realEmail, password: password);
 }

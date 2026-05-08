@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:tandag_911/admin/departments_functions.dart';
 
 import '../const.dart';
 
@@ -24,10 +25,15 @@ departmentsDisplay(BuildContext context) {
               return snapshot.data!.docs.isEmpty ? Center(child: Text("No Departments Found", style: TextStyle(color: Colors.grey),)) : ListView.builder(
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (context, i) {
-                    return Card(
-                      child: Container(
-                        child: Text(snapshot.data!.docs[i]['email']),
-                        height: 120,
+                    return InkWell(
+                      onLongPress: () async {
+                        deleteDepartmentDialog(context, snapshot.data!.docs[i]);
+                      },
+                      child: Card(
+                        child: Container(
+                          child: Text(snapshot.data!.docs[i]['email']),
+                          height: 120,
+                        ),
                       ),
                     );
                   });

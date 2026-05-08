@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'admin_functions.dart';
 
@@ -64,6 +66,28 @@ addDepartmentDialog(BuildContext context) {
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Department Added")));
       }, child: Text("Add"))
+    ],
+  ));
+}
+
+deleteDepartmentDialog(BuildContext context, QueryDocumentSnapshot doc) {
+  showDialog(context: context, builder: (_) => AlertDialog(
+    title: Text("Delete Deparment?"),
+    content: Container(
+      height: 200,
+      width: 120,
+      child: Text("This department will be deleted forever."),
+    ),
+    actions: [
+      TextButton(onPressed: () {
+        Navigator.pop(context);
+      }, child: Text("Cancel")),
+      TextButton(onPressed: () async {
+        await FirebaseAuth.instance.currentUser!.delete();
+        await doc.reference.delete();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Department Deleted")));
+
+      }, child: Text("Delete"))
     ],
   ));
 }
