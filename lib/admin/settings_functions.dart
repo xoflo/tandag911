@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_iconpicker/Models/configuration.dart';
+import 'package:flutter_iconpicker/Models/icon_picker_icon.dart';
+import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 
 updatePasswordDialog(BuildContext context, User user) {
   TextEditingController oldPass = TextEditingController();
@@ -36,5 +39,41 @@ updatePasswordDialog(BuildContext context, User user) {
 
       }, child: Text("Update Password"))
     ],
+  ));
+}
+
+
+addReportTypeDialog(BuildContext context) {
+
+  ValueNotifier<int?> codePoint = ValueNotifier(null);
+
+  showDialog(context: context, builder: (_) => AlertDialog(
+    content: Container(
+      height: 300,
+      width: 250,
+     child: Column(
+       children: [
+         ValueListenableBuilder(valueListenable: codePoint, builder: (z, value, c) {
+           return  codePoint != null ? Icon(IconData(codePoint.value!, fontFamily: 'MaterialIcons')) : Container(),
+
+         })
+         SizedBox(height: 10),
+         TextButton(onPressed: () async {
+           IconPickerIcon? icon = await showIconPicker(
+             context,
+             configuration: SinglePickerConfiguration(
+               iconPackModes: [IconPack.material, IconPack.cupertino],
+             ),
+           );
+
+           if (icon != null) {
+             codePoint = icon.data.codePoint;
+
+             print(codePoint);
+           }
+         }, child: Text("Select Icon"))
+       ],
+     ), 
+    ),
   ));
 }
