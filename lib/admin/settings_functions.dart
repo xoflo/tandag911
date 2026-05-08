@@ -15,12 +15,14 @@ updatePasswordDialog(BuildContext context, User user) {
           TextField(
             controller: oldPass,
             decoration: InputDecoration(
+              hintText: 'Old Password',
                 suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility))
             ),
           ),
           TextField(
             controller: newPass,
             decoration: InputDecoration(
+                hintText: 'New Password',
                 suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility))
             ),
           ),
