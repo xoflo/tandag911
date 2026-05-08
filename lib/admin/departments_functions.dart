@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tandag_911/const.dart';
+import '../global/app_state.dart';
 import 'admin_functions.dart';
 
 addDepartmentDialog(BuildContext context) {
@@ -16,7 +16,7 @@ addDepartmentDialog(BuildContext context) {
   showDialog(context: context, builder: (_) => AlertDialog(
     title: Text("Add Department"),
     content: Container(
-      height: 345,
+      height: 350,
       width: 300,
       child: Column(
         children: [
@@ -71,7 +71,9 @@ addDepartmentDialog(BuildContext context) {
     ),
     actions: [
       TextButton(onPressed: () async {
+        ignoreAuthChanges = true;
         await createEmailUserAdmin(context, username.text, password.text, departmentName.text);
+        ignoreAuthChanges = false;
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Department Added")));
       }, child: Text("Add"))
@@ -85,21 +87,22 @@ deleteDepartmentDialog(BuildContext context, QueryDocumentSnapshot doc) {
     content: Container(
       height: 60,
       width: 120,
-      child: Text("This department will be deleted forever. Go to account settings and delete?"),
+      child: Text("This department will be deleted forever."),
     ),
     actions: [
       TextButton(onPressed: () {
         Navigator.pop(context);
       }, child: Text("Cancel")),
       TextButton(onPressed: () async {
+        Navigator.pop(context);
         ignoreAuthChanges = true;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Department Deleted")));
+
+        await doc.reference.delete();
         await FirebaseAuth.instance.signInWithEmailAndPassword(email: doc['email'], password: doc['password']);
         await FirebaseAuth.instance.currentUser!.delete();
-        await doc.reference.delete();
         await FirebaseAuth.instance.signInWithEmailAndPassword(email: 'admin@tandagemergencyapp.com', password: doc['password']);
         ignoreAuthChanges = false;
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Department Deleted")));
 
       }, child: Text("Delete"))
     ],

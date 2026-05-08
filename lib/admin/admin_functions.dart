@@ -6,7 +6,6 @@ import '../const.dart';
 createEmailUserAdmin(BuildContext context, String email, String password, String department) async {
   final realEmail = '$email@tandagemergencyapp.com';
 
-
   await firestore.collection('admins').doc(realEmail).set({
     'email': realEmail,
     'password': password,

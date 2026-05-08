@@ -9,6 +9,7 @@ import 'package:tandag_911/ui_const.dart';
 import 'package:tandag_911/user/user.dart';
 import 'const.dart';
 import 'firebase_options.dart';
+import 'global/app_state.dart';
 import 'login/signup.dart';
 
 void main() async {
