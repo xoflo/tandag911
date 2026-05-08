@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
               if (FirebaseAuth.instance.currentUser!.email!.contains('tandagemergencyapp.com')) {
                 final user = FirebaseAuth.instance.currentUser!.email!.split('@')[0];
 
-                if (user.contains('admin')) {
+                if (user.contains('admin') && user.length == 5) {
                   return AdminScreen(user: FirebaseAuth.instance.currentUser!);
                 } else {
                   return SubAdminScreen(user: FirebaseAuth.instance.currentUser!!);

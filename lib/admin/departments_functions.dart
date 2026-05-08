@@ -74,17 +74,19 @@ deleteDepartmentDialog(BuildContext context, QueryDocumentSnapshot doc) {
   showDialog(context: context, builder: (_) => AlertDialog(
     title: Text("Delete Deparment?"),
     content: Container(
-      height: 200,
+      height: 60,
       width: 120,
-      child: Text("This department will be deleted forever."),
+      child: Text("This department will be deleted forever. Go to account settings and delete?"),
     ),
     actions: [
       TextButton(onPressed: () {
         Navigator.pop(context);
       }, child: Text("Cancel")),
       TextButton(onPressed: () async {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(email: doc['email'], password: doc['password']);
         await FirebaseAuth.instance.currentUser!.delete();
         await doc.reference.delete();
+        Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Department Deleted")));
 
       }, child: Text("Delete"))
