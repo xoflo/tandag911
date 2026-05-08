@@ -7,7 +7,7 @@ createEmailUserAdmin(BuildContext context, String email, String password, String
   final realEmail = '$email@tandagemergencyapp.com';
 
 
-  await firestore.collection('admins').add({
+  await firestore.collection('admins').doc(realEmail).set({
     'email': realEmail,
     'password': password,
     'department': department,

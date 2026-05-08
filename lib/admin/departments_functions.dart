@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tandag_911/const.dart';
 import 'admin_functions.dart';
 
 addDepartmentDialog(BuildContext context) {
@@ -83,9 +84,12 @@ deleteDepartmentDialog(BuildContext context, QueryDocumentSnapshot doc) {
         Navigator.pop(context);
       }, child: Text("Cancel")),
       TextButton(onPressed: () async {
+        ignoreAuthChanges = true;
         await FirebaseAuth.instance.signInWithEmailAndPassword(email: doc['email'], password: doc['password']);
         await FirebaseAuth.instance.currentUser!.delete();
         await doc.reference.delete();
+        await FirebaseAuth.instance.signInWithEmailAndPassword(email: 'admin@tandagemergencyapp.com', password: doc['password']);
+        ignoreAuthChanges = false;
         Navigator.pop(context);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Department Deleted")));
 

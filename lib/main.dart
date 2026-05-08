@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:tandag_911/sub-admin/sub-admin.dart';
 import 'package:tandag_911/ui_const.dart';
 import 'package:tandag_911/user/user.dart';
+import 'const.dart';
 import 'firebase_options.dart';
 import 'login/signup.dart';
 
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Tandag Emergency App',
       home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
+        stream: ignoreAuthChanges == true ? null : FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return CircularProgressIndicator();
@@ -56,7 +57,7 @@ class MyApp extends StatelessWidget {
                 if (user.contains('admin') && user.length == 5) {
                   return AdminScreen(user: FirebaseAuth.instance.currentUser!);
                 } else {
-                  return SubAdminScreen(user: FirebaseAuth.instance.currentUser!!);
+                  return SubAdminScreen(user: FirebaseAuth.instance.currentUser!);
                 }
               }
             }
