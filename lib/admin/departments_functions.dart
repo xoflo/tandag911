@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'admin_functions.dart';
 
 addDepartmentDialog(BuildContext context) {
   TextEditingController departmentName = TextEditingController();
@@ -6,7 +7,6 @@ addDepartmentDialog(BuildContext context) {
   TextEditingController password = TextEditingController();
 
   ValueNotifier<bool> visibility = ValueNotifier(true);
-  ValueNotifier<bool> loginInformation = ValueNotifier(false);
   FocusNode usernameFocus = FocusNode();
 
 
@@ -18,6 +18,7 @@ addDepartmentDialog(BuildContext context) {
       child: Column(
         children: [
           TextField(
+            controller: departmentName,
             decoration: InputDecoration(
               hintText: 'Department Name'
             ),
@@ -58,8 +59,10 @@ addDepartmentDialog(BuildContext context) {
       ),
     ),
     actions: [
-      TextButton(onPressed: () {
-
+      TextButton(onPressed: () async {
+        await createEmailUserAdmin(context, username.text, password.text, departmentName.text);
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Department Added")));
       }, child: Text("Add"))
     ],
   ));
