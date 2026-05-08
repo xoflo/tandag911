@@ -20,18 +20,7 @@ settingsDisplay(BuildContext context, User user) {
         Align(alignment: Alignment.centerLeft,child: Text("Report Types", style: TextStyle(fontSize: 28, fontWeight: FontWeight.w900),)),
         TextButton(
           onPressed: () async {
-            IconPickerIcon? icon = await showIconPicker(
-              context,
-              configuration: SinglePickerConfiguration(
-                iconPackModes: [IconPack.material, IconPack.cupertino],
-              ),
-            );
-
-            if (icon != null) {
-              final codePoint = icon.data.codePoint;
-
-              print(codePoint);
-            }
+            addReportTypeDialog(context);
           },
           child: Text("Add Type"),
         ),

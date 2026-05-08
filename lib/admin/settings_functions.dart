@@ -44,19 +44,28 @@ updatePasswordDialog(BuildContext context, User user) {
 
 
 addReportTypeDialog(BuildContext context) {
-
+  TextEditingController reportType = TextEditingController();
   ValueNotifier<int?> codePoint = ValueNotifier(null);
 
   showDialog(context: context, builder: (_) => AlertDialog(
+    title: Text("Add Report Type"),
     content: Container(
-      height: 300,
+      height: 160,
       width: 250,
      child: Column(
        children: [
          ValueListenableBuilder(valueListenable: codePoint, builder: (z, value, c) {
-           return  codePoint != null ? Icon(IconData(codePoint.value!, fontFamily: 'MaterialIcons')) : Container(),
+           return codePoint.value != null ?
+           Icon(
+               size: 50,
+               IconData(codePoint.value!, fontFamily: 'MaterialIcons')) :
+           Container(
+             height: 50,
+             width: 50,
+             color: Colors.grey,
+           );
 
-         })
+         }),
          SizedBox(height: 10),
          TextButton(onPressed: () async {
            IconPickerIcon? icon = await showIconPicker(
@@ -67,13 +76,24 @@ addReportTypeDialog(BuildContext context) {
            );
 
            if (icon != null) {
-             codePoint = icon.data.codePoint;
+             codePoint.value = icon.data.codePoint;
 
              print(codePoint);
            }
-         }, child: Text("Select Icon"))
+         }, child: Text("Select Icon")),
+         TextField(
+           controller: reportType,
+           decoration: InputDecoration(
+             hintText: 'Report Type'
+           ),
+         )
        ],
      ), 
     ),
+    actions: [
+      TextButton(onPressed: () {
+
+      }, child: Text("Add"))
+    ],
   ));
 }
