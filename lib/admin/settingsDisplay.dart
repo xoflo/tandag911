@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tandag_911/admin/settings_functions.dart';
 
 settingsDisplay(BuildContext context, User user) {
   return Padding(
@@ -11,39 +12,7 @@ settingsDisplay(BuildContext context, User user) {
         children: [
           Text(user.email.toString()),
           ElevatedButton(onPressed: () {
-            TextEditingController oldPass = TextEditingController();
-            TextEditingController newPass = TextEditingController();
-
-            showDialog(context: context, builder: (_) => AlertDialog(
-              title: Text("Update Password"),
-              content: Container(
-                height: 300,
-                width: 300,
-                child: Column(
-                  children: [
-                    TextField(
-                      controller: oldPass,
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility))
-                      ),
-                    ),
-                    TextField(
-                      controller: newPass,
-                      decoration: InputDecoration(
-                          suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility))
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(onPressed: () async {
-                  await user.updatePassword(newPass.text);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password Updated")));
-
-                }, child: Text("Update Password"))
-              ],
-            ));
+            updatePasswordDialog(context, user);
           }, child: Text("Update Password")),
         ],
       ),
