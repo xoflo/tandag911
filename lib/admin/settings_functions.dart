@@ -8,8 +8,8 @@ updatePasswordDialog(BuildContext context, User user) {
   showDialog(context: context, builder: (_) => AlertDialog(
     title: Text("Update Password"),
     content: Container(
-      height: 300,
-      width: 300,
+      height: 100,
+      width: 140,
       child: Column(
         children: [
           TextField(
