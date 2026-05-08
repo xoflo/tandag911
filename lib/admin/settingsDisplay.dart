@@ -11,6 +11,9 @@ settingsDisplay(BuildContext context, User user) {
         children: [
           Text(user.email.toString()),
           ElevatedButton(onPressed: () {
+            TextEditingController oldPass = TextEditingController();
+            TextEditingController newPass = TextEditingController();
+
             showDialog(context: context, builder: (_) => AlertDialog(
               title: Text("Update Password"),
               content: Container(
@@ -19,14 +22,27 @@ settingsDisplay(BuildContext context, User user) {
                 child: Column(
                   children: [
                     TextField(
+                      controller: oldPass,
                       decoration: InputDecoration(
                         suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility))
                       ),
                     ),
-                    TextField(),
+                    TextField(
+                      controller: newPass,
+                      decoration: InputDecoration(
+                          suffixIcon: IconButton(onPressed: () {}, icon: Icon(Icons.visibility))
+                      ),
+                    ),
                   ],
                 ),
               ),
+              actions: [
+                TextButton(onPressed: () async {
+                  await user.updatePassword(newPass.text);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password Updated")));
+
+                }, child: Text("Update Password"))
+              ],
             ));
           }, child: Text("Update Password")),
         ],
