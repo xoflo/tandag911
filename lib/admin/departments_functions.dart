@@ -7,12 +7,13 @@ addDepartmentDialog(BuildContext context) {
 
   ValueNotifier<bool> visibility = ValueNotifier(true);
   ValueNotifier<bool> loginInformation = ValueNotifier(false);
+  FocusNode usernameFocus = FocusNode();
 
 
   showDialog(context: context, builder: (_) => AlertDialog(
     title: Text("Add Department"),
     content: Container(
-      height: 180,
+      height: 210,
       width: 300,
       child: Column(
         children: [
@@ -22,20 +23,20 @@ addDepartmentDialog(BuildContext context) {
             ),
           ),
           TextField(
+            maxLength: 12,
             controller: username,
+            focusNode: usernameFocus,
             decoration: InputDecoration(
               suffixText: '@tandagemergencyapp.com',
-                hintText: 'Username'
+              hintText: 'Username',
             ),
-            onTap: () {
-              loginInformation.value = true;
-            },
-            onTapOutside: (value) {
-              loginInformation.value = !loginInformation.value;
-            },
           ),
-          ValueListenableBuilder(valueListenable: loginInformation, builder: (z, x, c) {
-            return Text("${username.text}@tandagemergencyapp.com is your login email", style: TextStyle(color: Colors.grey));
+          ValueListenableBuilder(valueListenable: username, builder: (z, value, c) {
+            if (!usernameFocus.hasFocus || value.text.isEmpty) {
+              return SizedBox();
+            }
+
+            return Center(child: Text("${value.text}@tandagemergencyapp.com\nis your login email.", style: TextStyle(color: Colors.grey), textAlign: TextAlign.center,));
           }),
 
           ValueListenableBuilder(
