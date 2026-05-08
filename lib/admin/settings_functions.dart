@@ -4,6 +4,8 @@ import 'package:flutter_iconpicker/Models/configuration.dart';
 import 'package:flutter_iconpicker/Models/icon_picker_icon.dart';
 import 'package:flutter_iconpicker/flutter_iconpicker.dart';
 
+import '../const.dart';
+
 updatePasswordDialog(BuildContext context, User user) {
   TextEditingController oldPass = TextEditingController();
   TextEditingController newPass = TextEditingController();
@@ -77,8 +79,6 @@ addReportTypeDialog(BuildContext context) {
 
            if (icon != null) {
              codePoint.value = icon.data.codePoint;
-
-             print(codePoint);
            }
          }, child: Text("Select Icon")),
          TextField(
@@ -91,8 +91,29 @@ addReportTypeDialog(BuildContext context) {
      ), 
     ),
     actions: [
-      TextButton(onPressed: () {
+      TextButton(onPressed: () async {
+        try {
+          if (reportType.text.isEmpty || codePoint.value == null) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please fill in all fields.")));
+            return;
+          }
 
+          if (await firestore.collection('reportTypes').doc('${reportType.text}').get().then((value) => value.exists)) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Report Type Already Exists.")));
+            return;
+          }
+
+          await firestore.collection('reportTypes').doc('${reportType.text}').set({
+            'name': reportType.text,
+            'codePoint': codePoint.value,
+            'createdAt': DateTime.now()
+          });
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Report Type Added")));
+
+        } on FirebaseException catch(e) {
+          print(e);
+        }
       }, child: Text("Add"))
     ],
   ));
