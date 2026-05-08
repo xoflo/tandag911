@@ -16,10 +16,18 @@ addDepartmentDialog(BuildContext context) {
   showDialog(context: context, builder: (_) => AlertDialog(
     title: Text("Add Department"),
     content: Container(
-      height: 210,
+      height: 345,
       width: 300,
       child: Column(
         children: [
+          Container(
+            height: 100,
+            width: 100,
+            color: Colors.grey,
+          ),
+          SizedBox(height: 5),
+          TextButton(onPressed: () {}, child: Text("Add Image")),
+          SizedBox(height: 5),
           TextField(
             controller: departmentName,
             decoration: InputDecoration(
