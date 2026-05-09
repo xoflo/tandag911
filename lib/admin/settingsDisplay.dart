@@ -31,7 +31,7 @@ settingsDisplay(BuildContext context, User user) {
           ),
         ),
         Container(
-          height: MediaQuery.of(context).size.height * .35,
+          height: MediaQuery.of(context).size.height - 400,
           child: StreamBuilder(
             stream: firestore.collection('reportTypes').orderBy('createdAt').snapshots(), builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (!snapshot.hasData) {

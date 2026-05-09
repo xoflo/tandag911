@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../global/app_state.dart';
 import 'admin_functions.dart';
 
@@ -12,72 +16,93 @@ addDepartmentDialog(BuildContext context) {
   ValueNotifier<bool> visibility = ValueNotifier(true);
   FocusNode usernameFocus = FocusNode();
 
+  final ImagePicker picker = ImagePicker();
+  dynamic image;
 
-  showDialog(context: context, builder: (_) => AlertDialog(
-    title: Text("Add Department"),
-    content: Container(
-      height: 350,
-      width: 300,
-      child: Column(
-        children: [
-          Container(
-            height: 100,
-            width: 100,
-            color: Colors.grey,
-          ),
-          SizedBox(height: 5),
-          TextButton(onPressed: () {}, child: Text("Add Image")),
-          SizedBox(height: 5),
-          TextField(
-            controller: departmentName,
-            decoration: InputDecoration(
-              hintText: 'Department Name'
-            ),
-          ),
-          TextField(
-            maxLength: 12,
-            controller: username,
-            focusNode: usernameFocus,
-            decoration: InputDecoration(
-              suffixText: '@tandagemergencyapp.com',
-              hintText: 'Username',
-            ),
-          ),
-          ValueListenableBuilder(valueListenable: username, builder: (z, value, c) {
-            if (!usernameFocus.hasFocus || value.text.isEmpty) {
-              return SizedBox();
-            }
+  showDialog(context: context, builder: (_) => StatefulBuilder(
+    builder: (BuildContext context, void Function(void Function()) setState) {
+      return AlertDialog(
+        title: Text("Add Department"),
+        content: Container(
+          height: 350,
+          width: 300,
+          child: Column(
+            children: [
+              Container(
+                height: 100,
+                width: 100,
+                child: image == null ? SizedBox() : kIsWeb ? Image.memory(image) : Image.file(image),
+                color: Colors.grey,
+              ),
+              SizedBox(height: 5),
+              TextButton(onPressed: () async {
 
-            return Center(child: Text("${value.text}@tandagemergencyapp.com\nis your login email.", style: TextStyle(color: Colors.grey), textAlign: TextAlign.center,));
-          }),
+                final XFile? pickedImage = await picker.pickImage(
+                  source: ImageSource.gallery,
+                );
 
-          ValueListenableBuilder(
-            valueListenable: visibility, builder: (BuildContext context, value, Widget? child) {
-              return TextField(
-                obscureText: visibility.value,
-                controller: password,
+                if (pickedImage != null) {
+                  if (kIsWeb) {
+                    image = await pickedImage.readAsBytes();
+                  } else {
+                    image = File(pickedImage.path);
+                  }
+                  setState(() {});
+                }
+              }, child: Text("Add Image")),
+              SizedBox(height: 5),
+              TextField(
+                controller: departmentName,
                 decoration: InputDecoration(
-                    suffix: IconButton(onPressed: () {
-                      visibility.value = !visibility.value;
-                    }, icon: Icon(visibility.value ? Icons.visibility : Icons.visibility_off)),
-                    hintText: 'Password'
+                    hintText: 'Department Name'
                 ),
-              );
-          },
-          ),
+              ),
+              TextField(
+                maxLength: 12,
+                controller: username,
+                focusNode: usernameFocus,
+                decoration: InputDecoration(
+                  suffixText: '@tandagemergencyapp.com',
+                  hintText: 'Username',
+                ),
+              ),
+              ValueListenableBuilder(valueListenable: username, builder: (z, value, c) {
+                if (!usernameFocus.hasFocus || value.text.isEmpty) {
+                  return SizedBox();
+                }
 
+                return Center(child: Text("${value.text}@tandagemergencyapp.com\nis your login email.", style: TextStyle(color: Colors.grey), textAlign: TextAlign.center,));
+              }),
+
+              ValueListenableBuilder(
+                valueListenable: visibility, builder: (BuildContext context, value, Widget? child) {
+                return TextField(
+                  obscureText: visibility.value,
+                  controller: password,
+                  decoration: InputDecoration(
+                      suffix: IconButton(onPressed: () {
+                        visibility.value = !visibility.value;
+                      }, icon: Icon(visibility.value ? Icons.visibility : Icons.visibility_off)),
+                      hintText: 'Password'
+                  ),
+                );
+              },
+              ),
+
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () async {
+            ignoreAuthChanges = true;
+            await createEmailUserAdmin(context, username.text, password.text, departmentName.text);
+            ignoreAuthChanges = false;
+            Navigator.pop(context);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Department Added")));
+          }, child: Text("Add"))
         ],
-      ),
-    ),
-    actions: [
-      TextButton(onPressed: () async {
-        ignoreAuthChanges = true;
-        await createEmailUserAdmin(context, username.text, password.text, departmentName.text);
-        ignoreAuthChanges = false;
-        Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Department Added")));
-      }, child: Text("Add"))
-    ],
+      );
+    },
   ));
 }
 
