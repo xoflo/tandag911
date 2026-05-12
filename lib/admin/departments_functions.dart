@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import '../const.dart';
 import '../global/app_state.dart';
 import 'admin_functions.dart';
 
@@ -24,14 +25,18 @@ addDepartmentDialog(BuildContext context) {
       return AlertDialog(
         title: Text("Add Department"),
         content: Container(
-          height: 350,
+          height: 320,
           width: 300,
           child: Column(
             children: [
               Container(
                 height: 100,
                 width: 100,
-                child: image == null ? SizedBox() : kIsWeb ? Image.memory(image) : Image.file(image),
+                child: image == null ? SizedBox() : kIsWeb ? Image.memory(
+                    fit: BoxFit.cover,
+                    image) : Image.file(
+                    fit: BoxFit.cover,
+                    image),
                 color: Colors.grey,
               ),
               SizedBox(height: 5),
@@ -95,6 +100,13 @@ addDepartmentDialog(BuildContext context) {
         actions: [
           TextButton(onPressed: () async {
             ignoreAuthChanges = true;
+
+            await firestore.collection('departments').doc(departmentName.text).set({
+                  'name': departmentName.text,
+                  'email': username.text,
+                  'password': password.text,
+                });
+
             await createEmailUserAdmin(context, username.text, password.text, departmentName.text);
             ignoreAuthChanges = false;
             Navigator.pop(context);
