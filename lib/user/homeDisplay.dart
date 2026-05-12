@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+import '../const.dart';
 
 
 homeDisplay(BuildContext context) {
@@ -16,16 +19,30 @@ homeDisplay(BuildContext context) {
         Container(
           height: MediaQuery.of(context).size.height - 300,
           width: MediaQuery.of(context).size.width - 30,
-          child: ListView.builder(
-              itemCount: 3,
-              itemBuilder: (context, i) {
-            return Card(
-              child: Container(
-                height: 150,
-              ),
+          child: StreamBuilder(
+            stream: firestore.collection('reports').snapshots(), builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            if (!snapshot.hasData) {
+              return Center(
+                child: Container(
+                  height: 50,
+                  width: 50,
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            }
 
-            );
-          }),
+            return snapshot.data!.docs.length == 0 ? Center(child: Text("No Reports", style: TextStyle(color: Colors.grey))) : ListView.builder(
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (context, i) {
+                  return Card(
+                    child: Container(
+                      height: 150,
+                    ),
+
+                  );
+                });
+          },
+          ),
         )
 
       ],

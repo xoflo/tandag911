@@ -4,6 +4,7 @@ import 'package:tandag_911/login/login_functions.dart';
 import 'package:tandag_911/ui_const.dart';
 import 'package:tandag_911/user/homeDisplay.dart';
 import 'package:tandag_911/user/profileDisplay.dart';
+import 'package:tandag_911/user/user_functions.dart';
 
 class UserScreen extends StatefulWidget {
   UserScreen({super.key, required this.user});
@@ -27,8 +28,7 @@ class _UserScreenState extends State<UserScreen> {
         floatingActionButton: currentIndex.value == 1 ? null : FloatingActionButton(
             child: Icon(Icons.add),
             onPressed: () {
-
-
+              addReport(context, widget.user!);
             }),
         bottomNavigationBar: BottomNavigationBar(
             onTap: (value) {
