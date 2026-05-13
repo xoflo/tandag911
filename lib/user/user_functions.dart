@@ -18,7 +18,7 @@ addReport(BuildContext context, User user) {
   showDialog(context: context, builder: (_) => AlertDialog(
     title: Text("Add Report"),
     content: Container(
-      height: 300,
+      height: 320,
       width: 300,
       child: Column(
         spacing: 10,
@@ -51,8 +51,8 @@ addReport(BuildContext context, User user) {
                 hintText: 'Description'
             ),
           ),
-          TextButton(onPressed: () {
-            pickMediaFiles();
+          TextButton(onPressed: () async {
+            await pickMediaFiles();
           }, child: Text("Add Attachments"),)
 
         ],
@@ -68,14 +68,15 @@ addReport(BuildContext context, User user) {
 
 
 Future<FilePickerResult?> pickMediaFiles() async {
+  try {
 
-  Future<void> pickFile() async {
-    FilePickerResult? result =
-    await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null) {
       print(result.files.single.name);
     }
+  } catch(e){
+    print(e);
   }
 
 }

@@ -83,16 +83,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               ValueListenableBuilder(
-                valueListenable: hidePassword,
-                builder: (BuildContext context, bool value, Widget? child) {
-                  return IconButton(
-                      onPressed: () {
-                        hidePassword.value = !hidePassword.value;
-                      },
-                      icon: Icon(hidePassword.value
-                          ? Icons.visibility
-                          : Icons.visibility_off));
-                },
+                valueListenable: isPhone, builder: (BuildContext context, value, Widget? child) {
+                  return  ValueListenableBuilder(
+                    valueListenable: hidePassword,
+                    builder: (BuildContext context, bool value, Widget? child) {
+                      return IconButton(
+                          onPressed: () {
+                            hidePassword.value = !hidePassword.value;
+                          },
+                          icon: Icon(hidePassword.value
+                              ? Icons.visibility
+                              : Icons.visibility_off));
+                    },
+                  );
+              },
               ),
 
               ElevatedButton(
