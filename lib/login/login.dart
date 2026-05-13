@@ -84,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               ValueListenableBuilder(
                 valueListenable: isPhone, builder: (BuildContext context, value, Widget? child) {
-                  return  ValueListenableBuilder(
+                  return isPhone.value == true ? SizedBox() : ValueListenableBuilder(
                     valueListenable: hidePassword,
                     builder: (BuildContext context, bool value, Widget? child) {
                       return IconButton(
