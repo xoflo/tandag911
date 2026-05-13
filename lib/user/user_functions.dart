@@ -1,7 +1,11 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../const.dart';
 
@@ -42,11 +46,14 @@ addReport(BuildContext context, User user) {
           TextField(
             controller: description,
             maxLength: 500,
-            maxLines: 5,
+            maxLines: 4,
             decoration: InputDecoration(
                 hintText: 'Description'
             ),
           ),
+          TextButton(onPressed: () {
+            pickMediaFiles();
+          }, child: Text("Add Attachments"),)
 
         ],
       ),
@@ -57,6 +64,20 @@ addReport(BuildContext context, User user) {
       }, child: Text("Add Report"))
     ],
   ));
+}
+
+
+Future<FilePickerResult?> pickMediaFiles() async {
+
+  Future<void> pickFile() async {
+    FilePickerResult? result =
+    await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      print(result.files.single.name);
+    }
+  }
+
 }
 
 submitReport(BuildContext context, User user, String title, String description, String type) async {

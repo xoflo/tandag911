@@ -41,6 +41,8 @@ dependencies:
   flutter_animate: ^4.5.2
   image_picker: ^1.2.2
   flutter_iconpicker: ^4.0.3
+  file_picker: ^8.0.0
+
 
 dev_dependencies:
   flutter_test:

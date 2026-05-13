@@ -2,6 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 
@@ -25,9 +26,6 @@
 
 	<key>CFBundleShortVersionString</key>
 	<string>$(FLUTTER_BUILD_NAME)</string>
-
-	<key>CFBundleSignature</key>
-	<string>????</string>
 
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
@@ -62,11 +60,16 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 
+	<!-- ✅ You already had these (good) -->
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs access to photos so departments can upload logos.</string>
 
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs access to the camera to take department logos.</string>
+
+	<!-- 🔥 ADD THIS (recommended for FilePicker stability) -->
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+	<true/>
 
 </dict>
 </plist>
