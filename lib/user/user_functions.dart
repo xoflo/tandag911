@@ -52,7 +52,7 @@ addReport(BuildContext context, User user) {
             ),
           ),
           TextButton(onPressed: () async {
-            await pickMediaFiles();
+            final result = await pickMediaFiles();
           }, child: Text("Add Attachments"),)
 
         ],
