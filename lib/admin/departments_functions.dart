@@ -26,7 +26,7 @@ addDepartmentDialog(BuildContext context) {
       return AlertDialog(
         title: Text("Add Department"),
         content: Container(
-          height: 320,
+          height: 350,
           width: 300,
           child: Column(
             children: [
@@ -100,6 +100,17 @@ addDepartmentDialog(BuildContext context) {
         ),
         actions: [
           TextButton(onPressed: () async {
+
+            showDialog(context: context, builder: (_) => AlertDialog(
+              content: Container(
+                height: 50,
+                width: 50,
+                child: CircularProgressIndicator(
+
+                ),
+              ),
+            ));
+
             ignoreAuthChanges = true;
 
             final ref = storage.ref().child('departments/${DateTime.now()}.jpg');
@@ -114,10 +125,13 @@ addDepartmentDialog(BuildContext context) {
                   'image' : downloadUrl
                 });
 
+            Navigator.pop(context);
+
             await createEmailUserAdmin(context, username.text, password.text, departmentName.text);
-            ignoreAuthChanges = false;
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Department Added")));
+
+            ignoreAuthChanges = false;
           }, child: Text("Add"))
         ],
       );
