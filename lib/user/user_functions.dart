@@ -99,6 +99,7 @@ addReport(BuildContext context, User user) {
                 actions: [
                   TextButton(onPressed: () {
                     files.clear();
+                    Navigator.pop(context);
                     setState((){});
                   },  child: Text("Clear Attachments"))
                 ],
