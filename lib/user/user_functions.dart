@@ -59,13 +59,42 @@ addReport(BuildContext context, User user) {
             files.isNotEmpty ? TextButton(onPressed: () {
               showDialog(context: context, builder: (_) => AlertDialog(
                 title: Text("Attachments"),
-                content: Container(
-                  child: ListView.builder(itemBuilder: (context, i) {
-                    return Card(
-
-                    );
-                  }),
-                ),
+                content: StatefulBuilder(builder: (context, setState) {
+                  return Container(
+                    height: 500,
+                    width: 500,
+                    child: ListView.builder(
+                        itemCount: files.length,
+                        itemBuilder: (context, i) {
+                          return Card(
+                            child: Container(
+                              height: 120,
+                              child: Row(
+                                spacing: 10,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(20),
+                                    height: 100,
+                                    width: 100,
+                                    child: FittedBox(
+                                      clipBehavior: Clip.hardEdge,
+                                      fit: BoxFit.cover,
+                                      child: Image.memory(files[i]),
+                                    ),
+                                  ),
+                                  Text("File ${i + 1}", overflow: TextOverflow.ellipsis,),
+                                  Spacer(),
+                                  IconButton(onPressed: () {
+                                    files.remove(i);
+                                    setState((){});
+                                  }, icon: Icon(Icons.delete),)
+                                ],
+                              ),
+                            ),
+                          );
+                        }),
+                  );
+                }),
               ));
             }, child: Text("See Attachments")) : TextButton(onPressed: () async {
               final List<XFile>? pickedFiles = await picker.pickMultipleMedia(
