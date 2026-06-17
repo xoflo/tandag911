@@ -85,7 +85,7 @@ addReport(BuildContext context, User user) {
                                   Text("File ${i + 1}", overflow: TextOverflow.ellipsis,),
                                   Spacer(),
                                   IconButton(onPressed: () {
-                                    files.remove(i);
+                                    files.removeAt(i);
                                     setState((){});
                                   }, icon: Icon(Icons.delete),)
                                 ],
@@ -95,6 +95,13 @@ addReport(BuildContext context, User user) {
                         }),
                   );
                 }),
+
+                actions: [
+                  TextButton(onPressed: () {
+                    files.clear();
+                    setState((){});
+                  },  child: Text("Clear Attachments"))
+                ],
               ));
             }, child: Text("See Attachments")) : TextButton(onPressed: () async {
               final List<XFile>? pickedFiles = await picker.pickMultipleMedia(
@@ -111,9 +118,10 @@ addReport(BuildContext context, User user) {
                   }
                 }
 
-                setState((){});
               }
 
+
+              setState((){});
 
             }, child: Text("Add Attachments"),)
 
