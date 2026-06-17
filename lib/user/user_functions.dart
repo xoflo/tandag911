@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,17 +16,20 @@ addReport(BuildContext context, User user) {
   TextEditingController title = TextEditingController();
   TextEditingController description = TextEditingController();
 
+  final ImagePicker picker = ImagePicker();
+  List<dynamic> files = [];
 
   showDialog(context: context, builder: (_) => AlertDialog(
     title: Text("Add Report"),
-    content: Container(
-      height: 320,
-      width: 300,
-      child: Column(
-        spacing: 10,
-        children: [
-          ValueListenableBuilder(
-            valueListenable: type, builder: (BuildContext context, value, Widget? child) {
+    content: StatefulBuilder(builder: (context, setState) {
+      return Container(
+        height: 320,
+        width: 300,
+        child: Column(
+          spacing: 10,
+          children: [
+            ValueListenableBuilder(
+              valueListenable: type, builder: (BuildContext context, value, Widget? child) {
               return ListTile(
                 leading: type.value != null ? Icon(IconData(int.parse(type.value!.split("_")[1]), fontFamily: 'MaterialIcons')) : null,
                 title: Text('${type.value?.split("_")[0] ?? 'Report Type: Select'}'),
@@ -35,29 +40,58 @@ addReport(BuildContext context, User user) {
                 },
               );
             },
-          ),
-          TextField(
-            controller: title,
-            maxLength: 50,
-            decoration: InputDecoration(
-              hintText: 'Title'
             ),
-          ),
-          TextField(
-            controller: description,
-            maxLength: 500,
-            maxLines: 4,
-            decoration: InputDecoration(
-                hintText: 'Description'
+            TextField(
+              controller: title,
+              maxLength: 50,
+              decoration: InputDecoration(
+                  hintText: 'Title'
+              ),
             ),
-          ),
-          TextButton(onPressed: () async {
-            final result = await pickMediaFiles();
-          }, child: Text("Add Attachments"),)
+            TextField(
+              controller: description,
+              maxLength: 500,
+              maxLines: 4,
+              decoration: InputDecoration(
+                  hintText: 'Description'
+              ),
+            ),
+            files.isNotEmpty ? TextButton(onPressed: () {
+              showDialog(context: context, builder: (_) => AlertDialog(
+                title: Text("Attachments"),
+                content: Container(
+                  child: ListView.builder(itemBuilder: (context, i) {
+                    return Card(
 
-        ],
-      ),
-    ),
+                    );
+                  }),
+                ),
+              ));
+            }, child: Text("See Attachments")) : TextButton(onPressed: () async {
+              final List<XFile>? pickedFiles = await picker.pickMultipleMedia(
+                limit: 5,
+              );
+
+              if (pickedFiles!.isNotEmpty) {
+
+                for (int i = 0; i < pickedFiles.length; i++) {
+                  if (kIsWeb) {
+                    files.add(await pickedFiles[i].readAsBytes());
+                  } else {
+                    files.add(File(pickedFiles[i].path));
+                  }
+                }
+
+                setState((){});
+              }
+
+
+            }, child: Text("Add Attachments"),)
+
+          ],
+        ),
+      );
+    }),
     actions: [
       TextButton(onPressed: () {
         submitReport(context, user, title.text.trim(), description.text.trim(), type.value!.trim());
