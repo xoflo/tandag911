@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
 import '../const.dart';
-
 
 homeDisplay(BuildContext context) {
   return Padding(
@@ -10,7 +8,6 @@ homeDisplay(BuildContext context) {
     child: Column(
       spacing: 5,
       children: [
-
         Align(
             alignment: Alignment.centerLeft,
             child: Text("Home", style: TextStyle(fontSize: 35, fontWeight: FontWeight.w900))),
@@ -38,13 +35,11 @@ homeDisplay(BuildContext context) {
                     child: Container(
                       height: 150,
                     ),
-
                   );
                 });
           },
           ),
         )
-
       ],
     ),
   );;
