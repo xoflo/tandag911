@@ -37,10 +37,10 @@ homeDisplay(BuildContext context) {
                     ),
                   );
                 });
-          },
+            },
           ),
         )
       ],
     ),
-  );;
+  );
 }

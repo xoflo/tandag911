@@ -17,7 +17,10 @@ addReport(BuildContext context, User user) {
   TextEditingController description = TextEditingController();
 
   final ImagePicker picker = ImagePicker();
-  List<dynamic> files = [];
+  Map<String, List<dynamic>> mediaMap = {
+    "photos": [],
+    "videos": [],
+  };
 
   showDialog(context: context, builder: (_) => AlertDialog(
     title: Text("Add Report"),
@@ -56,7 +59,7 @@ addReport(BuildContext context, User user) {
                   hintText: 'Description'
               ),
             ),
-            files.isNotEmpty ? TextButton(onPressed: () {
+            mediaMap["photos"]!.isEmpty && mediaMap["videos"]!.isEmpty ? TextButton(onPressed: () {
               showDialog(context: context, builder: (_) => AlertDialog(
                 title: Text("Attachments"),
                 content: StatefulBuilder(builder: (context, setState) {
@@ -64,7 +67,7 @@ addReport(BuildContext context, User user) {
                     height: 500,
                     width: 500,
                     child: ListView.builder(
-                        itemCount: files.length,
+                        itemCount: mediaMap["photos"]!.length + mediaMap["videos"]!.length,
                         itemBuilder: (context, i) {
                           return Card(
                             child: Container(
@@ -73,14 +76,19 @@ addReport(BuildContext context, User user) {
                               child: Row(
                                 spacing: 10,
                                 children: [
-                                  Container(
-                                    padding: EdgeInsets.all(20),
-                                    height: 100,
-                                    width: 100,
-                                    child: FittedBox(
-                                      clipBehavior: Clip.hardEdge,
-                                      fit: BoxFit.cover,
-                                      child: Image.memory(files[i]),
+                                  InkWell(
+                                    onTap:() {
+
+                                    },
+                                    child: Container(
+                                      padding: EdgeInsets.all(20),
+                                      height: 100,
+                                      width: 100,
+                                      child: FittedBox(
+                                        clipBehavior: Clip.hardEdge,
+                                        fit: BoxFit.cover,
+                                        child:  Image.memory(files[i]),
+                                      ),
                                     ),
                                   ),
                                   Text("File ${i + 1}", overflow: TextOverflow.ellipsis,),
@@ -110,16 +118,31 @@ addReport(BuildContext context, User user) {
                 limit: 5,
               );
 
-              if (pickedFiles!.isNotEmpty) {
+              List<String> videoExtensions = ['.mp4' , '.mov','.avi', '.mkv'];
 
+
+              if (pickedFiles != null && pickedFiles.isNotEmpty) {
                 for (int i = 0; i < pickedFiles.length; i++) {
-                  if (kIsWeb) {
-                    files.add(await pickedFiles[i].readAsBytes());
+                  final currentFile = pickedFiles[i];
+                  final pathLower = currentFile.path.toLowerCase();
+
+                  bool isVideo = videoExtensions.any((ext) => pathLower.endsWith(ext));
+
+                  final mediaData = await currentFile.readAsBytes();
+                  final mediaPath = File(currentFile.path);
+
+                  if (isVideo) {
+                    if (kIsWeb) {
+
+                      files.add(mediaData);
+                    } else {
+                      // Create File object for Mobile/Desktop platforms
+                      files.add(mediaPath);
+                    }
                   } else {
-                    files.add(File(pickedFiles[i].path));
+                    print('Skipped: ${currentFile.name} is not a supported video format.');
                   }
                 }
-
               }
 
 
