@@ -45,7 +45,7 @@ departmentsDisplay(BuildContext context) {
                                 ),
                               ),
                               Column(children: [
-                                Text(snapshot.data!.docs[i]['name']),
+                                Text(snapshot.data!.docs[i]['name'], style: TextStyle(fontSize: 30, fontWeight: FontWeight.w700),),
                                 Text(snapshot.data!.docs[i]['email'])
                               ],)
                             ],
