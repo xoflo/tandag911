@@ -12,7 +12,7 @@ departmentsDisplay(BuildContext context) {
         height: MediaQuery.of(context).size.height - 120,
         width: MediaQuery.of(context).size.width,
         child: StreamBuilder(
-          stream: firestore.collection('admins').snapshots(), builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          stream: firestore.collection('departments').snapshots(), builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return Center(
                 child: Container(
@@ -33,14 +33,20 @@ departmentsDisplay(BuildContext context) {
                         child: Container(
                           padding: EdgeInsets.all(20),
                           child: Row(
+                            spacing: 15,
                             children: [
                               Container(
-                                height: 50,
-                                width: 50,
-                                child: Image.network(snapshot.data!.docs[i]['image']),
+                                height: 100,
+                                width: 100,
+                                child: FittedBox(
+                                  clipBehavior: Clip.hardEdge,
+                                  fit: BoxFit.cover,
+                                  child: Image.network(snapshot.data!.docs[i]['image']),
+                                ),
                               ),
                               Column(children: [
-
+                                Text(snapshot.data!.docs[i]['name']),
+                                Text(snapshot.data!.docs[i]['email'])
                               ],)
                             ],
                           ),
