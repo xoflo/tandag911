@@ -31,7 +31,19 @@ departmentsDisplay(BuildContext context) {
                       },
                       child: Card(
                         child: Container(
-                          child: Text(snapshot.data!.docs[i]['email']),
+                          padding: EdgeInsets.all(20),
+                          child: Row(
+                            children: [
+                              Container(
+                                height: 50,
+                                width: 50,
+                                child: Image.network(snapshot.data!.docs[i]['image']),
+                              ),
+                              Column(children: [
+
+                              ],)
+                            ],
+                          ),
                           height: 120,
                         ),
                       ),
