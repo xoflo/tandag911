@@ -68,6 +68,7 @@ addReport(BuildContext context, User user) {
                         itemBuilder: (context, i) {
                           return Card(
                             child: Container(
+                              padding: EdgeInsets.all(20),
                               height: 120,
                               child: Row(
                                 spacing: 10,
