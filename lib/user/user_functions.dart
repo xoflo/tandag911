@@ -1,6 +1,5 @@
 
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -8,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:video_player/video_player.dart';
 
 import '../const.dart';
 
@@ -16,11 +16,14 @@ addReport(BuildContext context, User user) {
   TextEditingController title = TextEditingController();
   TextEditingController description = TextEditingController();
 
+  
+
   final ImagePicker picker = ImagePicker();
   Map<String, List<dynamic>> mediaMap = {
     "photos": [],
     "videos": [],
   };
+
 
   showDialog(context: context, builder: (_) => AlertDialog(
     title: Text("Add Report"),
@@ -63,11 +66,21 @@ addReport(BuildContext context, User user) {
               showDialog(context: context, builder: (_) => AlertDialog(
                 title: Text("Attachments"),
                 content: StatefulBuilder(builder: (context, setState) {
+
+
+                  final photosLength = mediaMap['photos']!.length;
+                  
+
+                  List<dynamic> allMedia = [
+                    ...mediaMap["photos"]!,
+                    ...mediaMap["videos"]!,
+                  ];
+
                   return Container(
                     height: 500,
                     width: 500,
                     child: ListView.builder(
-                        itemCount: mediaMap["photos"]!.length + mediaMap["videos"]!.length,
+                        itemCount: allMedia.length,
                         itemBuilder: (context, i) {
                           return Card(
                             child: Container(
@@ -87,14 +100,14 @@ addReport(BuildContext context, User user) {
                                       child: FittedBox(
                                         clipBehavior: Clip.hardEdge,
                                         fit: BoxFit.cover,
-                                        child:  Image.memory(files[i]),
+                                        child: i > photosLength ? Image.memory(allMedia[i]) :  VideoPlayer(VideoPlayerController.file(allMedia[i])),
                                       ),
                                     ),
                                   ),
                                   Text("File ${i + 1}", overflow: TextOverflow.ellipsis,),
                                   Spacer(),
                                   IconButton(onPressed: () {
-                                    files.removeAt(i);
+                                    allMedia.removeAt(i);
                                     setState((){});
                                   }, icon: Icon(Icons.delete),)
                                 ],
@@ -107,7 +120,8 @@ addReport(BuildContext context, User user) {
 
                 actions: [
                   TextButton(onPressed: () {
-                    files.clear();
+                    mediaMap['videos']!.clear();
+                    mediaMap['photos']!.clear();
                     Navigator.pop(context);
                     setState((){});
                   },  child: Text("Clear Attachments"))
@@ -133,14 +147,16 @@ addReport(BuildContext context, User user) {
 
                   if (isVideo) {
                     if (kIsWeb) {
-
-                      files.add(mediaData);
+                      mediaMap['videos']!.add(mediaData);
                     } else {
-                      // Create File object for Mobile/Desktop platforms
-                      files.add(mediaPath);
+                      mediaMap['videos']!.add(mediaPath);
                     }
                   } else {
-                    print('Skipped: ${currentFile.name} is not a supported video format.');
+                    if (kIsWeb) {
+                      mediaMap['photos']!.add(mediaData);
+                    } else {
+                      mediaMap['photos']!.add(mediaPath);
+                    }
                   }
                 }
               }
