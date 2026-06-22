@@ -62,14 +62,51 @@ addReport(BuildContext context, User user) {
                   hintText: 'Description'
               ),
             ),
-            mediaMap["photos"]!.isEmpty && mediaMap["videos"]!.isEmpty ? TextButton(onPressed: () {
+            mediaMap["photos"]!.isEmpty && mediaMap["videos"]!.isEmpty ?  TextButton(onPressed: () async {
+              final List<XFile>? pickedFiles = await picker.pickMultipleMedia(
+                limit: 5,
+              );
+
+              List<String> videoExtensions = ['.mp4' , '.mov','.avi', '.mkv'];
+
+
+              if (pickedFiles != null && pickedFiles.isNotEmpty) {
+                for (int i = 0; i < pickedFiles.length; i++) {
+                  final currentFile = pickedFiles[i];
+                  final pathLower = currentFile.path.toLowerCase();
+
+                  bool isVideo = videoExtensions.any((ext) => pathLower.endsWith(ext));
+
+                  final mediaData = await currentFile.readAsBytes();
+                  final mediaPath = File(currentFile.path);
+
+                  if (isVideo) {
+                    if (kIsWeb) {
+                      mediaMap['videos']!.add(mediaData);
+                    } else {
+                      mediaMap['videos']!.add(mediaPath);
+                    }
+                  } else {
+                    if (kIsWeb) {
+                      mediaMap['photos']!.add(mediaData);
+                    } else {
+                      mediaMap['photos']!.add(mediaPath);
+                    }
+                  }
+                }
+              }
+
+
+              setState((){});
+
+            }, child: Text("Add Attachments"),) : TextButton(onPressed: () {
               showDialog(context: context, builder: (_) => AlertDialog(
                 title: Text("Attachments"),
                 content: StatefulBuilder(builder: (context, setState) {
 
 
                   final photosLength = mediaMap['photos']!.length;
-                  
+
 
                   List<dynamic> allMedia = [
                     ...mediaMap["photos"]!,
@@ -127,44 +164,7 @@ addReport(BuildContext context, User user) {
                   },  child: Text("Clear Attachments"))
                 ],
               ));
-            }, child: Text("See Attachments")) : TextButton(onPressed: () async {
-              final List<XFile>? pickedFiles = await picker.pickMultipleMedia(
-                limit: 5,
-              );
-
-              List<String> videoExtensions = ['.mp4' , '.mov','.avi', '.mkv'];
-
-
-              if (pickedFiles != null && pickedFiles.isNotEmpty) {
-                for (int i = 0; i < pickedFiles.length; i++) {
-                  final currentFile = pickedFiles[i];
-                  final pathLower = currentFile.path.toLowerCase();
-
-                  bool isVideo = videoExtensions.any((ext) => pathLower.endsWith(ext));
-
-                  final mediaData = await currentFile.readAsBytes();
-                  final mediaPath = File(currentFile.path);
-
-                  if (isVideo) {
-                    if (kIsWeb) {
-                      mediaMap['videos']!.add(mediaData);
-                    } else {
-                      mediaMap['videos']!.add(mediaPath);
-                    }
-                  } else {
-                    if (kIsWeb) {
-                      mediaMap['photos']!.add(mediaData);
-                    } else {
-                      mediaMap['photos']!.add(mediaPath);
-                    }
-                  }
-                }
-              }
-
-
-              setState((){});
-
-            }, child: Text("Add Attachments"),)
+            }, child: Text("See Attachments"))
 
           ],
         ),
