@@ -137,7 +137,7 @@ addReport(BuildContext context, User user) {
                                       child: FittedBox(
                                         clipBehavior: Clip.hardEdge,
                                         fit: BoxFit.cover,
-                                        child: i > photosLength ? Image.memory(allMedia[i]) :  VideoPlayer(VideoPlayerController.file(allMedia[i])),
+                                        child: i < photosLength ? Image.memory(allMedia[i]) :  VideoPlayer(VideoPlayerController.file(allMedia[i])),
                                       ),
                                     ),
                                   ),
